@@ -5,16 +5,17 @@ const customFaker = new Faker({ locale: [es] });
 
 await db.connect();
 await seedAccounts();
+await seedRoles();
 await db.end();
 console.log("🌱 Database seeded.");
 
-async function createAccount({ username, email, password }) {
+async function createAccount({ username, email, password, roleId }) {
   const SQL = `
-  INSERT INTO accounts(username, email, password) 
-  VALUES($1, $2, crypt($3, gen_salt('bf')))
+  INSERT INTO accounts(username, email, password, role_id) 
+  VALUES($1, $2, crypt($3, gen_salt('bf')), $4)
   RETURNING *
   `;
-  const params = [username, email, password];
+  const params = [username, email, password, roleId];
 
   const {
     rows: [account],
@@ -25,9 +26,27 @@ async function createAccount({ username, email, password }) {
   return account;
 }
 
+async function createRole({ name, weight, is_default, is_staff, icon }) {
+  const SQL = `
+  INSERT INTO roles(name, weight, is_default, is_staff, icon) 
+  VALUES($1, $2, $3, $4, $5)
+  RETURNING *
+  `;
+  const params = [name, weight, is_default, is_staff, icon];
+
+  const {
+    rows: [role],
+  } = await db.query(SQL, params);
+
+  console.log(role);
+
+  return role;
+}
+
+
 async function seedAccounts() {
   const accounts = [
-    { username: "Ethan Toups", email: "ethantoups05@gmail.com", password: "test123" },
+    { username: "Ethan Toups", email: "ethantoups05@gmail.com", password: "test123", role_id: 1 },
   ];
 
   for (let index = 0; index < 9; index++) {
@@ -35,6 +54,7 @@ async function seedAccounts() {
       username: customFaker.person.firstName(),
       email: customFaker.internet.email(),
       password: customFaker.internet.password(),
+      role_id: 1,
     };
 
     accounts.push(account);
@@ -44,5 +64,19 @@ async function seedAccounts() {
     const account = accounts[index];
 
     await createAccount(account);
+  }
+}
+
+async function seedRoles() {
+  const roles = [
+    { name: "Member", weight: 100, is_default: true, is_staff: false, icon: "Member" },
+    { name: "Moderator", weight: 500, is_default: false, is_staff: true, icon: "Moderator" },
+    { name: "Founder", weight: 1000, is_default: false, is_staff: true, icon: "Founder" },
+  ];
+
+  for (const index in roles) {
+    const role = roles[index];
+
+    await createRole(role);
   }
 }
