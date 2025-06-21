@@ -1,16 +1,16 @@
 import db from "#db/client";
 
 /**
- * 
+ *
  * @param name the name of the new role
  * @param weight the weight of the new role
  * @param is_default if the role should be the default role
  * @param is_staff if the role should be a staff role
  * @param icon the icon of the new account
- * 
+ *
  * @returns the role created
  * @returns undefined if it can't be created
- * 
+ *
  */
 export async function createRole({ name, weight, is_default, is_staff, icon }) {
   const SQL = `
@@ -26,12 +26,34 @@ export async function createRole({ name, weight, is_default, is_staff, icon }) {
 }
 
 /**
- * 
+ *
+ * @param id the id of the role to delete
+ *
+ * @returns the role was deleted
+ * @returns undefined if it can't be found
+ *
+ */
+export async function deleteRole(id) {
+  const SQL = `
+    DELETE FROM roles
+    WHERE id = $1
+    RETURNING *
+    `;
+
+  const {
+    rows: [role],
+  } = await db.query(SQL, [id]);
+
+  return role || undefined;
+}
+
+/**
+ *
  * @param id the id of the role
- * 
+ *
  * @returns the role was found
  * @returns undefined if it can't be found
- * 
+ *
  */
 export async function getRoleById(id) {
   const SQL = `
@@ -47,10 +69,10 @@ export async function getRoleById(id) {
 }
 
 /**
- * 
+ *
  * @returns the default role
  * @returns undefined if it can't be found
- * 
+ *
  */
 export async function getDefaultRole() {
   const SQL = `
@@ -66,10 +88,10 @@ export async function getDefaultRole() {
 }
 
 /**
- * 
+ *
  * @returns all roles
  * @returns undefined if there's an error with the query
- * 
+ *
  */
 export async function getRoles() {
   const SQL = `
@@ -81,13 +103,13 @@ export async function getRoles() {
 }
 
 /**
- * 
+ *
  * @param id the id of the role
  * @param fields the update parameters
- * 
+ *
  * @returns the updated role
  * @returns undefined if it can't be updated/found
- * 
+ *
  */
 export async function updateRole(id, fields) {
   const updates = Object.entries(fields).filter(

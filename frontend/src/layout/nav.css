@@ -1,0 +1,22 @@
+.navBar {
+  display: flex;
+  position: sticky;
+  justify-content: space-around;
+  gap: 10%;
+  align-items: center;
+}
+
+.navBar .navTitle {
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.navLinks {
+  display: flex;
+  gap: 3ch;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: var(--text-color);
+}

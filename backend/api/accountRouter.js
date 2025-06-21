@@ -3,7 +3,6 @@ import {
   createAccount,
   generateJWT,
   getAccountById,
-  updateAccount,
   validateAccount,
   validateJWT,
 } from "#db/query/accounts";
@@ -27,7 +26,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.get("/login", async (req, res) => {
+router.post("/login", async (req, res) => {
   if (!req.body) {
     return res.status(400).json("Invalid body provided.");
   }
@@ -47,7 +46,7 @@ router.get("/login", async (req, res) => {
   });
 });
 
-router.get("/verify", async (req, res) => {
+router.post("/verify", async (req, res) => {
   if (!req.body) {
     return res.status(400).json("Invalid body provided.");
   }

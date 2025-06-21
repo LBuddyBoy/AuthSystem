@@ -4,18 +4,18 @@ import { Faker, es } from "@faker-js/faker";
 const customFaker = new Faker({ locale: [es] });
 
 await db.connect();
-await seedAccounts();
 await seedRoles();
+await seedAccounts();
 await db.end();
 console.log("🌱 Database seeded.");
 
-async function createAccount({ username, email, password, roleId }) {
+async function createAccount({ username, email, password, role_id }) {
   const SQL = `
   INSERT INTO accounts(username, email, password, role_id) 
   VALUES($1, $2, crypt($3, gen_salt('bf')), $4)
   RETURNING *
   `;
-  const params = [username, email, password, roleId];
+  const params = [username, email, password, role_id];
 
   const {
     rows: [account],

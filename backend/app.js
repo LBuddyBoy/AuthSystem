@@ -1,10 +1,12 @@
 import express from "express";
+import cors from "cors";
 import accountRouter from "#api/accountRouter";
 import authRouter from "#api/authRouter";
 import roleRouter from "#api/roleRouter";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.use("/account", accountRouter);

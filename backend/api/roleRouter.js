@@ -1,4 +1,4 @@
-import { getRoleById, getRoles, updateRole } from "#db/query/roles";
+import { getRoleById, getRoles, updateRole, deleteRole, createRole } from "#db/query/roles";
 import { isValidId, useAuth } from "./utils.js";
 import express from "express";
 
@@ -34,6 +34,36 @@ router.get("/:id", async (req, res) => {
   }
 
   res.status(200).json(role);
+});
+
+router.delete("/", async (req, res) => {
+  if (!req.body) {
+    return res.status(400).json("Invalid body provided.");
+  }
+
+  try {
+    const { id, ...fields } = req.body;
+    const role = await deleteRole(id, fields);
+
+    res.status(204).json(role);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+router.post("/", async (req, res) => {
+  if (!req.body) {
+    return res.status(400).json("Invalid body provided.");
+  }
+
+  try {
+    const { name, weight, is_default, is_staff, icon } = req.body;
+    const role = await createRole({name, weight, is_default, is_staff, icon});
+
+    res.status(201).json(role);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
 });
 
 router.put("/", async (req, res) => {
