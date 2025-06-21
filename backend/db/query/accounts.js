@@ -109,24 +109,7 @@ export async function getAccountById(id) {
 
   if (!row) return undefined;
 
-  return {
-    id: row.account_id,
-    username: row.account_username,
-    email: row.account_email,
-    first_name: row.account_first_name,
-    last_name: row.account_last_name,
-    created_at: row.account_created_at,
-    role: {
-      id: row.role_id,
-      name: row.role_name,
-      weight: row.role_weight,
-      icon: row.role_icon,
-      is_default: row.role_is_default,
-      is_staff: row.role_is_staff,
-      permissions: row.role_permissions,
-      inheritance: row.role_inheritance,
-    },
-  };
+  return createAccountObject(row);
 }
 
 /**
@@ -153,24 +136,7 @@ export async function validateAccount({ email, password }) {
   } = await db.query(SQL, [email, password]);
   if (!row) return undefined;
 
-  return {
-    id: row.account_id,
-    username: row.username,
-    email: row.email,
-    first_name: row.first_name,
-    last_name: row.last_name,
-    created_at: row.created_at,
-    role: {
-      id: row.role_id,
-      name: row.role_name,
-      weight: row.role_weight,
-      icon: row.role_icon,
-      is_default: row.role_is_default,
-      is_staff: row.role_is_staff,
-      permissions: row.role_permissions,
-      inheritance: row.role_inheritance,
-    },
-  };
+  return createAccountObject(row);
 }
 
 /**
@@ -204,4 +170,31 @@ export async function validateJWT(token) {
   } catch (error) {
     return null;
   }
+}
+
+/**
+ * 
+ * @param row returned from the SQL statement
+ * @returns new account object with the mapped role
+ */
+
+function createAccountObject(row) {
+  return {
+    id: row.account_id,
+    username: row.account_username,
+    email: row.account_email,
+    first_name: row.account_first_name,
+    last_name: row.account_last_name,
+    created_at: row.account_created_at,
+    role: {
+      id: row.role_id,
+      name: row.role_name,
+      weight: row.role_weight,
+      icon: row.role_icon,
+      is_default: row.role_is_default,
+      is_staff: row.role_is_staff,
+      permissions: row.role_permissions,
+      inheritance: row.role_inheritance,
+    },
+  };
 }
