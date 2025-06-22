@@ -47,6 +47,7 @@ async function createRole({ name, weight, is_default, is_staff, icon }) {
 async function seedAccounts() {
   const accounts = [
     { username: "Ethan Toups", email: "ethantoups05@gmail.com", password: "test123", role_id: 1 },
+    { username: "Admin", email: "admin123@gmail.com", password: "password123", role_id: 3 },
   ];
 
   for (let index = 0; index < 9; index++) {
@@ -71,6 +72,7 @@ async function seedRoles() {
   const roles = [
     { name: "Member", weight: 100, is_default: true, is_staff: false, icon: "Member" },
     { name: "Moderator", weight: 500, is_default: false, is_staff: true, icon: "Moderator" },
+    { name: "Admin", weight: 750, is_default: false, is_staff: true, icon: "Admin" },
     { name: "Founder", weight: 1000, is_default: false, is_staff: true, icon: "Founder" },
   ];
 

@@ -1,5 +1,6 @@
 import express from "express";
 import { useAuth } from "./utils.js";
+import { getAccountById } from "#db/query/accounts";
 
 const authRouter = express.Router();
 const router = authRouter;
@@ -34,11 +35,11 @@ router.put("/account", async (req, res) => {
     return res.status(400).json("No fields found to update.");
   }
 
-  const account = await updateAccount(id, fields);
-
-  if (!account) {
+  if (!await updateAccount(id, fields)) {
     return res.status(400).json("There was an issue updating that account.");
   }
+
+  const account = await getAccountById(id);
 
   res.status(200).json(account);
 });

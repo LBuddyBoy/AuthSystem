@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { API } from "./APIContext";
 import Loading from "../components/Loading";
 
@@ -33,7 +28,7 @@ export function AccountProvider({ children }) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({jwt: token}),
+          body: JSON.stringify({ jwt: token }),
         });
         const result = await response.json();
 
@@ -52,6 +47,7 @@ export function AccountProvider({ children }) {
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
+    setAccount(null);
   };
 
   const login = async ({ email, password }) => {
@@ -89,7 +85,32 @@ export function AccountProvider({ children }) {
     console.log(result);
   };
 
-  const exports = { token, account, login, signup, logout };
+  const update = async ({ id, payload }) => {
+    const response = await fetch(`${API}/auth/account`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id, ...payload }),
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw result;
+    }
+
+    setAccount(result);
+  };
+
+  const hasPermission = (permission) => {
+    if (!account) {
+      throw new Error("No account found to check permissions.");
+    }
+
+    return account.role.permissions.includes(permission) || account.role.permissions.includes("*");
+  };
+
+  const exports = { token, account, login, signup, logout, update, hasPermission };
 
   if (loading) {
     return <Loading />;

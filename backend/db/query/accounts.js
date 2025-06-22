@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import db from "#db/client";
 import { getDefaultRole } from "./roles.js";
 
-const RETURNS = `id, username, email, role_id, first_name, last_name, created_at`;
+const RETURNS = `id, username, email, role_id, first_name, last_name, created_at, avatar_url`;
 const ROLE_RETURNS = `id, name, weight, icon, is_default, is_staff, permissions, inheritance`;
 
 const MAPPED_RETURNS = RETURNS.split(", ")
@@ -186,6 +186,7 @@ function createAccountObject(row) {
     first_name: row.account_first_name,
     last_name: row.account_last_name,
     created_at: row.account_created_at,
+    avatar_url: row.account_avatar_url,
     role: {
       id: row.role_id,
       name: row.role_name,

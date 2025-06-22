@@ -26,7 +26,7 @@ CREATE TABLE accounts(
     role_id INTEGER REFERENCES roles(id) ON DELETE SET NULL,
     username TEXT not null UNIQUE,
     email TEXT not null UNIQUE,
-    avatarURL TEXT not null DEFAULT 'https://www.gravatar.com/avatar/?d=mp&s=32',
+    avatar_url TEXT not null DEFAULT 'https://www.gravatar.com/avatar/?d=mp&s=32',
     password TEXT not null,
     first_name TEXT,
     last_name TEXT,

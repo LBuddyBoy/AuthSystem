@@ -2,8 +2,10 @@ import { Link, useNavigate } from "react-router";
 import { useAccount } from "../../context/AccountContext";
 import "./login.css";
 import Button from "../../components/Button";
+import { useState } from "react";
 
 export default function Login() {
+  const [error, setError] = useState();
   const { login } = useAccount();
   const navigate = useNavigate();
 
@@ -11,8 +13,12 @@ export default function Login() {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    await login({ email, password });
-    navigate("/account");
+    try {
+      await login({ email, password });
+      navigate("/account");
+    } catch (error) {
+      setError(error);
+    }
   };
 
   return (
@@ -20,7 +26,8 @@ export default function Login() {
       <h1>Log into your Account</h1>
       <input name="email" placeholder="Email" type="email" required />
       <input name="password" placeholder="Password" type="password" required />
-      <Button id="loginBtn" text={"Login"}/>
+      {error && <p className="errorText">{error}</p>}
+      <Button id="loginBtn" text={"Login"} />
       <Link to={"/signup"}>Don't have an account? Sign up here!</Link>
     </form>
   );

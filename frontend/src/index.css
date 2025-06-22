@@ -1,32 +1,90 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  --bg-color: #ffffff;
-  --bg-accent: #c7c5c58a;
-  --text-color: #1d1b1b;
+:root {
+  --bg-color: #f6f8fa;
+  --bg-accent: #fff;
+  --color-border: #e0e0e0;
+  --text-color: #222;
+  --primary: #54b96f;
+  --primary-dark: #37976b;
+  --danger: #e64848;
+  --danger-bg: #fae0e0;
+  --font-main: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+                'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.2rem;
+  --radius: 12px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1.5px 6px rgba(0,0,0,0.03);
+  --spacing: 1.1rem;
+  --transition: 0.3s cubic-bezier(.4,0,.2,1);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+[data-theme="dark"] {
+  --bg-color: #181d22;
+  --bg-accent: #22272e;
+  --color-border: #30363d;
+  --text-color: #e2eafc;
+  --primary: #77df9c;
+  --primary-dark: #4db477;
+  --danger: #ff7676;
+  --danger-bg: #492323;
+  --shadow: 0 4px 24px rgba(0,0,0,0.25), 0 1.5px 6px rgba(0,0,0,0.15);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: var(--font-main);
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-size: var(--font-size-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background var(--transition), color var(--transition);
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
 }
 
 .btn {
+  display: inline-block;
+  font-family: var(--font-main);
+  font-size: var(--font-size-base);
+  font-weight: 600;
   border: none;
-  background-color: var(--bg-accent);
-  border-radius: 5px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
+  outline: none;
+  border-radius: var(--radius);
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark) 80%);
+  color: #fff;
+  padding: 0.85em 1.6em;
+  margin: 0.2em 0;
+  box-shadow: 0 2px 8px rgba(84,185,111,0.05);
+  transition: background var(--transition), box-shadow var(--transition), opacity var(--transition);
+  cursor: pointer;
+  letter-spacing: 0.02em;
 }
 
-.btn:hover {
-  opacity: 75%;
-  transition: ease-in-out 0.2s opacity;
-  cursor: pointer;
+.btn:hover, .btn:focus {
+  background: linear-gradient(90deg, var(--primary-dark), var(--primary) 80%);
+  opacity: 0.92;
+  box-shadow: 0 4px 16px rgba(84,185,111,0.11);
+}
+
+.btn.danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+  box-shadow: none;
+}
+
+.btn.danger:hover, .btn.danger:focus {
+  background: #ffe5e5;
+  color: #be2323;
+  opacity: 1;
+}
+
+#root, #app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
