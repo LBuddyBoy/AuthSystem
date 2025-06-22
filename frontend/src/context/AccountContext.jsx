@@ -89,7 +89,7 @@ export function AccountProvider({ children }) {
     console.log(result);
   };
 
-  const exports = { token, account, login, signup };
+  const exports = { token, account, login, signup, logout };
 
   if (loading) {
     return <Loading />;

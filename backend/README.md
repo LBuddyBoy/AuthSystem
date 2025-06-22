@@ -1,4 +1,4 @@
-# AuthSystem
+# Auth System Backend
 An account authentication system. The public endpoints are anything in accountRouter, which allow no authentication to request them.
 
 # Features
