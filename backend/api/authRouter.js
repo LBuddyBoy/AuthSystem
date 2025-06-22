@@ -1,6 +1,6 @@
 import express from "express";
 import { useAuth } from "./utils.js";
-import { getAccountById } from "#db/query/accounts";
+import { getAccountById, updateAccount } from "#db/query/accounts";
 
 const authRouter = express.Router();
 const router = authRouter;

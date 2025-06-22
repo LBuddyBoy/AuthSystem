@@ -99,6 +99,8 @@ export function AccountProvider({ children }) {
       throw result;
     }
 
+    console.log(result);
+
     setAccount(result);
   };
 

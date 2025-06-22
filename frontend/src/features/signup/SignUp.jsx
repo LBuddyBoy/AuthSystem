@@ -3,6 +3,7 @@ import Button from "../../components/Button";
 import "./signup.css";
 import { useAccount } from "../../context/AccountContext";
 import { useState } from "react";
+import Error from "../../components/Error";
 
 export default function SignUp() {
   const [error, setError] = useState(null);
@@ -28,7 +29,7 @@ export default function SignUp() {
       <input name="username" placeholder="Username" type="text" required />
       <input name="email" placeholder="Email" type="email" required />
       <input name="password" placeholder="Password" type="password" required />
-      {error && <p className="errorText">{error}</p>}
+      {error && <Error error={error}/>}
       <Button id={"signupBtn"} text={"Sign Up"} />
       <Link to={"/login"}>Already have an account? Log in here!</Link>
     </form>

@@ -1,17 +1,35 @@
 import { useState } from "react";
 import Button from "../../components/Button";
 import { useAccount } from "../../context/AccountContext";
+import Error from "../../components/Error";
 
 export default function AccountForm() {
-  const { account } = useAccount();
+  const { account, update } = useAccount();
   const [avatar, setAvatar] = useState(account.avatar_url);
+  const [error, setError] = useState();
 
   if (!account) {
     return <></>;
   }
 
-  const handleSave = (formData) => {
-    const avatar = formData.get("avatar");
+  const handleSave = async (formData) => {
+    const username = formData.get("username");
+    const first_name = formData.get("first_name");
+    const last_name = formData.get("last_name");
+
+    try {
+      await update({
+        id: account.id,
+        payload: {
+          avatar_url: avatar,
+          username,
+          first_name,
+          last_name,
+        },
+      });
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   const handleAvatarChange = (e) => {
@@ -28,17 +46,29 @@ export default function AccountForm() {
 
       <label>
         Username
-        <input name="username" type="text" value={account.username} />
+        <input
+          name="username"
+          type="text"
+          defaultValue={account.username || undefined}
+        />
       </label>
 
       <label>
         First Name
-        <input name="first_name" type="text" value={account.first_name} />
+        <input
+          name="first_name"
+          type="text"
+          defaultValue={account.first_name || undefined}
+        />
       </label>
 
       <label>
         Last Name
-        <input name="last_name" type="text" value={account.last_name} />
+        <input
+          name="last_name"
+          type="text"
+          defaultValue={account.last_name || undefined}
+        />
       </label>
 
       <label>
@@ -51,6 +81,7 @@ export default function AccountForm() {
           onChange={handleAvatarChange}
         />
       </label>
+      {error && <Error error={error}/>}
       <Button id={"accountSaveBtn"} text={"Save"}></Button>
     </form>
   );

@@ -3,6 +3,7 @@ import { useAccount } from "../../context/AccountContext";
 import "./login.css";
 import Button from "../../components/Button";
 import { useState } from "react";
+import Error from "../../components/Error";
 
 export default function Login() {
   const [error, setError] = useState();
@@ -17,7 +18,7 @@ export default function Login() {
       await login({ email, password });
       navigate("/account");
     } catch (error) {
-      setError(error);
+      setError(error.message);
     }
   };
 
@@ -26,7 +27,7 @@ export default function Login() {
       <h1>Log into your Account</h1>
       <input name="email" placeholder="Email" type="email" required />
       <input name="password" placeholder="Password" type="password" required />
-      {error && <p className="errorText">{error}</p>}
+      {error && <Error error={error}/>}
       <Button id="loginBtn" text={"Login"} />
       <Link to={"/signup"}>Don't have an account? Sign up here!</Link>
     </form>
