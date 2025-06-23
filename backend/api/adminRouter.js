@@ -63,6 +63,7 @@ router.get(
       res.status(200).json(await getAccountsByField(field, query));
     } catch (error) {
       res.status(400).json(error.message);
+      console.log(error);
     }
   }
 );

@@ -115,11 +115,11 @@ export async function getAccountById(id) {
 export async function getAccountsByField(field, value) {
   const SQL = `
   SELECT * FROM accounts
-  WHERE ${field} = ${value}
+  WHERE ${field} ILIKE $1
   ORDER BY id
   `;
 
-  const { rows } = await db.query(SQL);
+  const { rows } = await db.query(SQL, [`%${value}%`]);
 
   return rows;
 }
@@ -129,7 +129,11 @@ export async function getAccounts(limit, cursor) {
 
   if (cursor) {
     SQL = `
-      SELECT * FROM accounts
+      SELECT 
+      ${MAPPED_RETURNS},
+      ${MAPPED_ROLE_RETURNS}
+      FROM accounts a
+      JOIN roles r ON a.role_id = r.id
       WHERE id > $1
       ORDER BY id
       LIMIT $2
@@ -137,8 +141,12 @@ export async function getAccounts(limit, cursor) {
     params = [cursor, limit];
   } else {
     SQL = `
-      SELECT * FROM accounts
-      ORDER BY id
+      SELECT 
+      ${MAPPED_RETURNS},
+      ${MAPPED_ROLE_RETURNS}
+      FROM accounts a
+      JOIN roles r ON a.role_id = r.id
+      ORDER BY a.id
       LIMIT $1
     `;
     params = [limit];
@@ -146,8 +154,10 @@ export async function getAccounts(limit, cursor) {
 
   const { rows } = await db.query(SQL, params);
 
+  console.log(rows.map(row => createAccountObject(row)));
+
   return {
-    accounts: rows,
+    accounts: rows.map(row => createAccountObject(row)),
     nextCursor: rows.length > 0 ? rows[rows.length - 1].id : null,
   };
 }

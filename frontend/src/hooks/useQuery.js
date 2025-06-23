@@ -14,6 +14,7 @@ export default function useQuery(resource, deps = []) {
     setError(null);
 
     fetch(API + resource, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + token,

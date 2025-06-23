@@ -13,10 +13,7 @@ export function AccountProvider({ children }) {
   const [account, setAccount] = useState(null);
 
   useEffect(() => {
-    console.log("Running Effect");
-
     if (!token) {
-      console.log("Stopping effect.");
       return;
     }
 
@@ -110,10 +107,39 @@ export function AccountProvider({ children }) {
       throw new Error("No account found to check permissions.");
     }
 
-    return account.role.permissions.includes(permission) || account.role.permissions.includes("*");
+    return (
+      account.role.permissions.includes(permission) ||
+      account.role.permissions.includes("*")
+    );
   };
 
-  const exports = { token, account, login, signup, logout, update, hasPermission };
+  const query = async (resource) => {
+    const response = await fetch(API + resource, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw result;
+    }
+
+    return result;
+  };
+
+  const exports = {
+    token,
+    account,
+    login,
+    signup,
+    logout,
+    update,
+    hasPermission,
+    query,
+  };
 
   if (loading) {
     return <Loading />;
