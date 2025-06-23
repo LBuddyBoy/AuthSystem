@@ -112,6 +112,34 @@ export async function getAccountById(id) {
   return createAccountObject(row);
 }
 
+export async function getAccounts(limit, cursor) {
+  let SQL, params;
+
+  if (cursor) {
+    SQL = `
+      SELECT * FROM accounts
+      WHERE id > $1
+      ORDER BY id
+      LIMIT $2
+    `;
+    params = [cursor, limit];
+  } else {
+    SQL = `
+      SELECT * FROM accounts
+      ORDER BY id
+      LIMIT $1
+    `;
+    params = [limit];
+  }
+
+  const { rows } = await db.query(SQL, params);
+  
+  return {
+    accounts: rows,
+    nextCursor: rows.length > 0 ? rows[rows.length - 1].id : null
+  };
+}
+
 /**
  *
  * @param email the email to query

@@ -11,6 +11,9 @@ import Account from "./features/account/Account";
 import SignUp from "./features/signup/SignUp";
 import Verify from "./features/verify/Verify";
 import { ThemeProvider } from "./context/ThemeContext";
+import Admin from "./features/admin/Admin";
+import RequireAuth from "./components/RequireAuth";
+import Error404 from "./components/Error404";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -26,6 +29,10 @@ root.render(
                 <Route index path="/signup" element={<SignUp />} />
                 <Route index path="/account" element={<Account />} />
                 <Route index path="/verify" element={<Verify />} />
+                <Route index path="/404" element={<Error404 />} />
+                <Route element={<RequireAuth permission="admin:panel" redirect={true} />}>
+                  <Route path="/admin" element={<Admin />} />
+                </Route>
               </Route>
             </Routes>
           </APIProvider>

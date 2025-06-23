@@ -3,9 +3,10 @@ import "./nav.css";
 import { useAccount } from "../context/AccountContext";
 import { useTheme } from "../context/ThemeContext";
 import Button from "../components/Button";
+import RequireAuth from "../components/RequireAuth";
 
 export default function Navbar() {
-  const { account, hasPermission } = useAccount();
+  const { account } = useAccount();
 
   return (
     <header className="navBar">
@@ -21,9 +22,7 @@ export default function Navbar() {
         ) : (
           <>
             <NavLink to={"/forums"}>Forums</NavLink>
-            {hasPermission("panel.admin") && (
-              <NavLink to={"/admin"}>Admin</NavLink>
-            )}
+            <NavLink to={"/admin"}>Admin</NavLink>
           </>
         )}
       </nav>

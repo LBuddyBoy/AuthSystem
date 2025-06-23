@@ -86,7 +86,7 @@ export function AccountProvider({ children }) {
   };
 
   const update = async ({ id, payload }) => {
-    const response = await fetch(`${API}/auth/account`, {
+    const response = await fetch(`${API}/admin/account`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -108,6 +108,9 @@ export function AccountProvider({ children }) {
     if (!account) {
       throw new Error("No account found to check permissions.");
     }
+
+    console.log(Array.isArray(account.role.permissions));
+    console.log(account.role.permissions);
 
     return account.role.permissions.includes(permission) || account.role.permissions.includes("*");
   };
