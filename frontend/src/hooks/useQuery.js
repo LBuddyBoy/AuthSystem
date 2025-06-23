@@ -1,31 +1,42 @@
 import { useEffect, useState } from "react";
-import { useAPI } from "./APIContext";
+import { useAccount } from "../context/AccountContext";
+import { API } from "../context/AccountContext";
 
-export default function useQuery(resource, tag) {
-  const { request, provideTag } = useAPI();
-
-  const [data, setData] = useState();
-  const [loading, setLoading] = useState(false);
+export default function useQuery(resource, deps = []) {
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const query = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await request(resource);
-      setData(result);
-    } catch (e) {
-      console.error(e);
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [data, setData] = useState(null);
+  const { token } = useAccount();
 
   useEffect(() => {
-    if (tag) provideTag(tag, query);
-    query();
-  });
+    let isMounted = true;
+    setLoading(true);
+    setError(null);
 
-  return { data, loading, error };
+    fetch(API + resource, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token,
+      },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (isMounted) {
+          setData(result);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          setError(err.message);
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, deps);
+
+  return { loading, error, data };
 }

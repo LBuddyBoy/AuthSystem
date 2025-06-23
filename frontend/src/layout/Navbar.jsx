@@ -22,7 +22,9 @@ export default function Navbar() {
         ) : (
           <>
             <NavLink to={"/forums"}>Forums</NavLink>
-            <NavLink to={"/admin"}>Admin</NavLink>
+            <RequireAuth permission={"admin:panel"}>
+                <NavLink to={"/admin"}>Admin</NavLink>
+            </RequireAuth>
           </>
         )}
       </nav>

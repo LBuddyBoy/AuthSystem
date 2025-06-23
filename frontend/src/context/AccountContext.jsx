@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { API } from "./APIContext";
 import Loading from "../components/Loading";
 
 const AccountContext = createContext();
+
+export const API = "http://localhost:5000";
 
 export function AccountProvider({ children }) {
   const [loading, setLoading] = useState(false);
@@ -108,9 +109,6 @@ export function AccountProvider({ children }) {
     if (!account) {
       throw new Error("No account found to check permissions.");
     }
-
-    console.log(Array.isArray(account.role.permissions));
-    console.log(account.role.permissions);
 
     return account.role.permissions.includes(permission) || account.role.permissions.includes("*");
   };
