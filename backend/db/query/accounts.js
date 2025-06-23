@@ -112,6 +112,18 @@ export async function getAccountById(id) {
   return createAccountObject(row);
 }
 
+export async function getAccountsByField(field, value) {
+  const SQL = `
+  SELECT * FROM accounts
+  WHERE ${field} = ${value}
+  ORDER BY id
+  `;
+
+  const { rows } = await db.query(SQL);
+
+  return rows;
+}
+
 export async function getAccounts(limit, cursor) {
   let SQL, params;
 
@@ -133,10 +145,10 @@ export async function getAccounts(limit, cursor) {
   }
 
   const { rows } = await db.query(SQL, params);
-  
+
   return {
     accounts: rows,
-    nextCursor: rows.length > 0 ? rows[rows.length - 1].id : null
+    nextCursor: rows.length > 0 ? rows[rows.length - 1].id : null,
   };
 }
 
@@ -201,7 +213,7 @@ export async function validateJWT(token) {
 }
 
 /**
- * 
+ *
  * @param row returned from the SQL statement
  * @returns new account object with the mapped role
  */

@@ -1,5 +1,6 @@
 import db from "#db/client";
 import { Faker, es } from "@faker-js/faker";
+import { updateRole } from "./query/roles.js";
 
 const customFaker = new Faker({ locale: [es] });
 
@@ -46,15 +47,23 @@ async function createRole({ name, weight, is_default, is_staff, icon }) {
 
 async function seedAccounts() {
   const accounts = [
-    { username: "Ethan Toups", email: "ethantoups05@gmail.com", password: "test123", role_id: 1 },
+    { username: "LBuddyBoy", email: "ethantoups05@gmail.com", password: "test123", role_id: 3 },
     { username: "Admin", email: "admin123@gmail.com", password: "password123", role_id: 3 },
   ];
 
-  for (let index = 0; index < 9; index++) {
+  for (let index = 0; index < 500; index++) {
+    const username = customFaker.internet.username();
+    const email = customFaker.internet.email();
+    const password = customFaker.internet.password();
+    
+    if (accounts.filter(account => account.username === username || account.email === email).length > 0) {
+      continue;
+    }
+
     const account = {
-      username: customFaker.person.firstName(),
-      email: customFaker.internet.email(),
-      password: customFaker.internet.password(),
+      username: username,
+      email: email,
+      password: password,
       role_id: 1,
     };
 
@@ -81,4 +90,12 @@ async function seedRoles() {
 
     await createRole(role);
   }
+
+  await updateRole(3, {
+    permissions: ["admin:panel"]
+  });
+
+  await updateRole(4, {
+    permissions: ["admin:panel"]
+  });
 }
