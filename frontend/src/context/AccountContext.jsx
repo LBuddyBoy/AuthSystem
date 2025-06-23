@@ -94,7 +94,7 @@ export function AccountProvider({ children }) {
 
     const result = await response.json();
     if (!response.ok) {
-      throw result;
+      throw new Error(result);
     }
 
     return result;

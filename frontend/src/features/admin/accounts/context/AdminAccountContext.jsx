@@ -8,28 +8,52 @@ export const PAGE_SIZE = 10;
 
 export function AdminAccountProvider({ children }) {
   const [cursor, setCursor] = useState(0);
+  const [updated, setUpdated] = useState(0);
   const [queryData, setQueryData] = useState();
   const [selected, setSelected] = useState(null);
   const [formData, setFormData] = useState({});
-  const { loading, error, data } = useQuery(
+  const [error, setError] = useState();
+  const { loading, data } = useQuery(
     "/admin/accounts/" + PAGE_SIZE + "/" + cursor,
-    [cursor]
+    [cursor, updated]
   );
+  const { loading: rolesLoading, data: roles } = useQuery("/roles");
 
-  if (loading || !data) {
+  if (loading || !data || rolesLoading || !roles) {
     return <Loading></Loading>;
   }
 
+  const { accounts, nextCursor } = data;
+
+  const handleNextPage = (e) => {
+    e.preventDefault();
+    setCursor(nextCursor);
+  };
+
+  const handlePreviousPage = () => {
+    if (cursor - PAGE_SIZE < 0 || cursor <= 0) {
+      return;
+    }
+
+    setCursor((current) => current - PAGE_SIZE);
+  };
+
   const exports = {
-    accounts: data.accounts,
-    nextCursor: data.nextCursor,
+    handleNextPage,
+    handlePreviousPage,
+    accounts: queryData ? queryData : accounts,
+    nextCursor,
     cursor,
+    roles,
     setCursor,
     queryData,
     setQueryData,
     selected,
     setSelected,
     formData,
+    error,
+    setError,
+    setUpdated,
     setFormData,
   };
 

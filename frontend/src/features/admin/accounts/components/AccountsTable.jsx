@@ -1,15 +1,11 @@
-import { useState } from "react";
-import useQuery from "../../../../hooks/useQuery";
 import { useAccount } from "../../../../context/AccountContext";
 import { useAdminAccount } from "../context/AdminAccountContext";
 
 export default function AccountsTable() {
-  const { accounts, setCursor } = useAdminAccount();
-
   return (
     <table className="adminAccountTable">
       <TableHead />
-      <TableBody accounts={accounts} setCursor={setCursor} />
+      <TableBody />
     </table>
   );
 }
@@ -28,9 +24,9 @@ function TableHead() {
   );
 }
 
-function TableBody({ accounts }) {
-  const [selected, setSelected] = useState(null);
-  const [formData, setFormData] = useState({});
+function TableBody() {
+  const { accounts, selected, setSelected, formData, setUpdated, setError } =
+    useAdminAccount();
   const { update } = useAccount();
 
   const startEditing = (e, account) => {
@@ -44,10 +40,14 @@ function TableBody({ accounts }) {
   };
 
   const saveEdits = async (e) => {
-    e.preventDefault();
-    console.log("selected ", selected);
-    console.log("formData ", formData);
-    setSelected(await update({ id: selected.id, payload: formData }));
+    try {
+      e.preventDefault();
+      await update({ id: selected.id, payload: formData });
+      setSelected(null);
+      setUpdated((current) => current + 1);
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   return (
@@ -62,22 +62,16 @@ function TableBody({ accounts }) {
               />
             </td>
             <TableData
-              selected={selected}
-              setFormData={setFormData}
               account={account}
               field={"username"}
               value={account.username}
             />
             <TableData
-              selected={selected}
-              setFormData={setFormData}
               account={account}
               field={"email"}
               value={account.email}
             />
             <TableData
-              selected={selected}
-              setFormData={setFormData}
               account={account}
               field={"role_id"}
               value={account.role}
@@ -108,8 +102,8 @@ function TableBody({ accounts }) {
   );
 }
 
-function TableData({ selected, setFormData, account, field, value }) {
-  const { loading, error, data: roles } = useQuery("/roles");
+function TableData({ account, field, value }) {
+  const { selected, setFormData, roles } = useAdminAccount();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -122,7 +116,7 @@ function TableData({ selected, setFormData, account, field, value }) {
   if (field === "role_id") {
     return (
       <td>
-        {selected && selected.id === account.id && !loading && roles ? (
+        {selected && selected.id === account.id ? (
           <select name={field} defaultValue={value.id} onChange={handleChange}>
             {roles.map((role) => {
               return (

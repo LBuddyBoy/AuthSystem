@@ -114,14 +114,18 @@ export async function getAccountById(id) {
 
 export async function getAccountsByField(field, value) {
   const SQL = `
-  SELECT * FROM accounts
-  WHERE ${field} ILIKE $1
-  ORDER BY id
+  SELECT
+  ${MAPPED_RETURNS},
+  ${MAPPED_ROLE_RETURNS}
+  FROM accounts a
+  JOIN roles r ON a.role_id = r.id
+  WHERE a.${field} ILIKE $1
+  ORDER BY a.id
   `;
 
   const { rows } = await db.query(SQL, [`%${value}%`]);
 
-  return rows;
+  return rows.map((row) => createAccountObject(row));
 }
 
 export async function getAccounts(limit, cursor) {
@@ -134,8 +138,8 @@ export async function getAccounts(limit, cursor) {
       ${MAPPED_ROLE_RETURNS}
       FROM accounts a
       JOIN roles r ON a.role_id = r.id
-      WHERE id > $1
-      ORDER BY id
+      WHERE a.id > $1
+      ORDER BY a.id
       LIMIT $2
     `;
     params = [cursor, limit];
@@ -153,12 +157,11 @@ export async function getAccounts(limit, cursor) {
   }
 
   const { rows } = await db.query(SQL, params);
-
-  console.log(rows.map(row => createAccountObject(row)));
+  const accounts = rows.map((row) => createAccountObject(row));
 
   return {
-    accounts: rows.map(row => createAccountObject(row)),
-    nextCursor: rows.length > 0 ? rows[rows.length - 1].id : null,
+    accounts: accounts,
+    nextCursor: accounts.length > 0 ? accounts[accounts.length - 1].id : null,
   };
 }
 
