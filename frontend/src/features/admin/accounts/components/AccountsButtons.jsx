@@ -1,7 +1,9 @@
 import Button from "../../../../components/Button";
-import { PAGE_SIZE } from "../AdminAccounts";
+import { PAGE_SIZE, useAdminAccount } from "../context/AdminAccountContext";
 
-export default function AccountsButtons({ nextCursor, cursor, setCursor }) {
+export default function AccountsButtons() {
+  const { nextCursor, cursor, setCursor } = useAdminAccount();
+
   const handleNextPage = (e) => {
     e.preventDefault();
     setCursor(nextCursor);

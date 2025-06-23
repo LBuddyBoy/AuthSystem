@@ -1,7 +1,9 @@
 import Button from "../../../../components/Button";
 import { useAccount } from "../../../../context/AccountContext";
+import { useAdminAccount } from "../context/AdminAccountContext";
 
-export default function SearchForm({ setQueryData }) {
+export default function AccountsSearch() {
+  const { setQueryData } = useAdminAccount();
   const { query } = useAccount();
 
   const handleSubmit = async (formData) => {

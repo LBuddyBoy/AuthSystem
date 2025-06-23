@@ -4,7 +4,7 @@ import { useAccount } from "../../context/AccountContext";
 import Error from "../../components/Error";
 
 export default function AccountForm() {
-  const { account, update } = useAccount();
+  const { account, setAccount, update } = useAccount();
   const [avatar, setAvatar] = useState(account.avatar_url);
   const [error, setError] = useState();
 
@@ -18,15 +18,17 @@ export default function AccountForm() {
     const last_name = formData.get("last_name");
 
     try {
-      await update({
-        id: account.id,
-        payload: {
-          avatar_url: avatar,
-          username,
-          first_name,
-          last_name,
-        },
-      });
+      setAccount(
+        await update({
+          id: account.id,
+          payload: {
+            avatar_url: avatar,
+            username,
+            first_name,
+            last_name,
+          },
+        })
+      );
     } catch (error) {
       setError(error.message);
     }
@@ -81,7 +83,7 @@ export default function AccountForm() {
           onChange={handleAvatarChange}
         />
       </label>
-      {error && <Error error={error}/>}
+      {error && <Error error={error} />}
       <Button id={"accountSaveBtn"} text={"Save"}></Button>
     </form>
   );

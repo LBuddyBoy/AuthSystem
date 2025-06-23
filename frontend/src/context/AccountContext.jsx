@@ -97,9 +97,7 @@ export function AccountProvider({ children }) {
       throw result;
     }
 
-    console.log(result);
-
-    setAccount(result);
+    return result;
   };
 
   const hasPermission = (permission) => {
@@ -133,6 +131,7 @@ export function AccountProvider({ children }) {
   const exports = {
     token,
     account,
+    setAccount,
     login,
     signup,
     logout,
