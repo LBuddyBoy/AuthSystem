@@ -15,6 +15,9 @@ import RequireAuth from "./components/RequireAuth";
 import Error404 from "./components/Error404";
 import AdminLayout from "./features/admin/layout/AdminLayout";
 import AdminAccounts from "./features/admin/accounts/AdminAccounts";
+import AdminRoles from "./features/admin/roles/AdminRoles";
+import AdminRolesLayout from "./features/admin/roles/AdminRolesLayout";
+import AdminAccountLayout from "./features/admin/accounts/AdminAccountLayout";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -37,7 +40,8 @@ root.render(
               >
                 <Route element={<AdminLayout />}>
                   <Route path="/admin" element={<AdminPanel />} />
-                  <Route path="/admin/accounts" element={<AdminAccounts />} />
+                  <Route path="/admin/accounts" element={<AdminAccountLayout />} />
+                  <Route path="/admin/roles" element={<AdminRolesLayout />} />
                 </Route>
               </Route>
             </Route>
