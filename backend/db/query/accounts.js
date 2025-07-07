@@ -2,13 +2,11 @@ import jwt from "jsonwebtoken";
 import db from "#db/client";
 import { getDefaultRole } from "./roles.js";
 
-const RETURNS = `id, username, email, role_id, first_name, last_name, created_at, avatar_url`;
-const ROLE_RETURNS = `id, name, weight, icon, is_default, is_staff, permissions, inheritance`;
+export const ACCOUNT_RETURNS = `id, username, email, role_id, first_name, last_name, created_at, avatar_url`;
+export const ROLE_RETURNS = `id, name, weight, icon, is_default, is_staff, permissions, inheritance`;
 
-const MAPPED_RETURNS = RETURNS.split(", ")
-  .map((s) => "a." + s + " AS account_" + s)
-  .toString();
-const MAPPED_ROLE_RETURNS = ROLE_RETURNS.split(", ")
+export const MAPPED_ACCOUNT_RETURNS = (identifier) => ACCOUNT_RETURNS.split(", ").map(s => identifier + "." + s).toString();
+export const MAPPED_ROLE_RETURNS = ROLE_RETURNS.split(", ")
   .map((s) => "r." + s + " AS role_" + s)
   .toString();
 
@@ -26,7 +24,7 @@ export async function createAccount({ username, email, password }) {
   const SQL = `
     INSERT INTO accounts(username, email, password, role_id)
     VALUES($1, $2, crypt($3, gen_salt('bf')), $4)
-    RETURNING ${RETURNS};
+    RETURNING ${ACCOUNT_RETURNS}
     `;
 
   try {
@@ -39,6 +37,8 @@ export async function createAccount({ username, email, password }) {
     const {
       rows: [account],
     } = await db.query(SQL, [username, email, password, defaultRole.id]);
+
+    console.log(account);
 
     return account;
   } catch (error) {
@@ -75,7 +75,7 @@ export async function updateAccount(id, fields) {
     UPDATE accounts
     SET ${sets.join(", ")}
     WHERE id = $1
-    RETURNING ${RETURNS}
+    RETURNING ${ACCOUNT_RETURNS}
     `;
 
   const {
@@ -95,12 +95,12 @@ export async function updateAccount(id, fields) {
  */
 export async function getAccountById(id) {
   const SQL = `
-    SELECT 
-    ${MAPPED_RETURNS},
-    ${MAPPED_ROLE_RETURNS}
-    FROM accounts a
-    JOIN roles r ON a.role_id = r.id
-    WHERE a.id = $1;
+    SELECT
+    ${MAPPED_ACCOUNT_RETURNS("accounts")},
+    row_to_json(roles) AS role
+    FROM accounts
+    JOIN roles ON accounts.role_id = roles.id
+    WHERE accounts.id = $1
     `;
 
   const {
@@ -109,59 +109,78 @@ export async function getAccountById(id) {
 
   if (!row) return undefined;
 
-  return createAccountObject(row);
+  return row;
 }
 
+/**
+ *
+ * @param field
+ * @param value
+ * @returns
+ */
 export async function getAccountsByField(field, value) {
+  const allowedFields = ["username", "email", "first_name", "last_name", "role_id"];
+
+  if (!allowedFields.includes(field)) {
+    throw new Error("Invalid search field");
+  }
+
   const SQL = `
   SELECT
-  ${MAPPED_RETURNS},
-  ${MAPPED_ROLE_RETURNS}
-  FROM accounts a
-  JOIN roles r ON a.role_id = r.id
-  WHERE a.${field} ILIKE $1
-  ORDER BY a.id
+  ${MAPPED_ACCOUNT_RETURNS("accounts")},
+  row_to_json(roles) AS role
+  FROM accounts
+  JOIN roles ON accounts.role_id = roles.id
+  WHERE accounts.${field} ILIKE $1
+  ORDER BY accounts.id
   `;
 
   const { rows } = await db.query(SQL, [`%${value}%`]);
 
-  return rows.map((row) => createAccountObject(row));
+  return rows;
 }
 
+/**
+ *
+ * Fetches a paginated list of accounts from the database using cursor-based pagination.
+ *
+ * @param limit The maximum number of accounts to return.
+ * @param cursor The account ID to start after; use null or 0 to start from the beginning.
+ * @returns An object of the accounts found and the next cursor for the next page
+ */
 export async function getAccounts(limit, cursor) {
   let SQL, params;
 
   if (cursor) {
     SQL = `
       SELECT 
-      ${MAPPED_RETURNS},
-      ${MAPPED_ROLE_RETURNS}
-      FROM accounts a
-      JOIN roles r ON a.role_id = r.id
-      WHERE a.id > $1
-      ORDER BY a.id
+      ${MAPPED_ACCOUNT_RETURNS("accounts")},
+      row_to_json(roles) AS role
+      FROM accounts
+      JOIN roles ON accounts.role_id = roles.id
+      WHERE accounts.id > $1
+      ORDER BY accounts.id
       LIMIT $2
     `;
     params = [cursor, limit];
   } else {
     SQL = `
       SELECT 
-      ${MAPPED_RETURNS},
-      ${MAPPED_ROLE_RETURNS}
-      FROM accounts a
-      JOIN roles r ON a.role_id = r.id
-      ORDER BY a.id
+      ${MAPPED_ACCOUNT_RETURNS("accounts")},
+      row_to_json(roles) AS role
+      FROM accounts
+      JOIN roles ON accounts.role_id = roles.id
+      ORDER BY accounts.id
       LIMIT $1
     `;
     params = [limit];
   }
 
   const { rows } = await db.query(SQL, params);
-  const accounts = rows.map((row) => createAccountObject(row));
 
   return {
-    accounts: accounts,
-    nextCursor: accounts.length > 0 ? accounts[accounts.length - 1].id : null,
+    accounts: rows,
+    nextCursor: rows.length > 0 ? rows[rows.length - 1].id : null,
   };
 }
 
@@ -177,11 +196,11 @@ export async function getAccounts(limit, cursor) {
 export async function validateAccount({ email, password }) {
   const SQL = `
     SELECT 
-    ${MAPPED_RETURNS},
-    ${MAPPED_ROLE_RETURNS}
-    FROM accounts a
-    JOIN roles r ON a.role_id = r.id
-    WHERE email = $1 AND password = crypt($2, password)
+    ${MAPPED_ACCOUNT_RETURNS("accounts")},
+    row_to_json(roles) AS role
+    FROM accounts
+    JOIN roles ON accounts.role_id = roles.id
+    WHERE accounts.email = $1 AND accounts.password = crypt($2, accounts.password)
     `;
 
   const {
@@ -189,7 +208,7 @@ export async function validateAccount({ email, password }) {
   } = await db.query(SQL, [email, password]);
   if (!row) return undefined;
 
-  return createAccountObject(row);
+  return row;
 }
 
 /**
@@ -200,7 +219,7 @@ export async function generateJWT(id) {
     UPDATE accounts
     SET jwt = $1
     WHERE id = $2
-    RETURNING ${RETURNS}
+    RETURNING ${ACCOUNT_RETURNS}
     `;
   const token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
@@ -223,32 +242,4 @@ export async function validateJWT(token) {
   } catch (error) {
     return null;
   }
-}
-
-/**
- *
- * @param row returned from the SQL statement
- * @returns new account object with the mapped role
- */
-
-function createAccountObject(row) {
-  return {
-    id: row.account_id,
-    username: row.account_username,
-    email: row.account_email,
-    first_name: row.account_first_name,
-    last_name: row.account_last_name,
-    created_at: row.account_created_at,
-    avatar_url: row.account_avatar_url,
-    role: {
-      id: row.role_id,
-      name: row.role_name,
-      weight: row.role_weight,
-      icon: row.role_icon,
-      is_default: row.role_is_default,
-      is_staff: row.role_is_staff,
-      permissions: row.role_permissions,
-      inheritance: row.role_inheritance,
-    },
-  };
 }

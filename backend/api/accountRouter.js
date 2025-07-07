@@ -6,25 +6,27 @@ import {
   validateAccount,
   validateJWT,
 } from "#db/query/accounts";
+import requireBody from "#middleware/requireBody";
 
-const accountRouter = express.Router();
-const router = accountRouter;
+const router = express.Router();
 
-router.post("/signup", async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json("Invalid body provided.");
+export default router;
+
+router.post(
+  "/signup",
+  requireBody(["username", "email", "password"]),
+  async (req, res) => {
+    const { username, email, password } = req.body;
+
+    try {
+      const account = await createAccount({ username, email, password });
+
+      res.status(201).json(account);
+    } catch (error) {
+      res.status(400).json(error.message);
+    }
   }
-
-  const { username, email, password } = req.body;
-
-  try {
-    const account = await createAccount({ username, email, password });
-
-    res.status(201).json(account);
-  } catch (error) {
-    res.status(400).json(error.message);
-  }
-});
+);
 
 router.post("/login", async (req, res) => {
   if (!req.body) {
@@ -55,12 +57,12 @@ router.post("/verify", async (req, res) => {
   const id = await validateJWT(jwt);
 
   if (!id) {
-    return res.status(400).json("Invalid token provided.");
+    return res
+      .status(404)
+      .json("That token is either expired or does not exist.");
   }
 
   const account = await getAccountById(id);
 
   res.status(200).json(account);
 });
-
-export default accountRouter;

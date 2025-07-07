@@ -2,8 +2,9 @@ import { getRoleById, getRoles, updateRole, deleteRole, createRole } from "#db/q
 import { isValidId, useAuth } from "./utils.js";
 import express from "express";
 
-const roleRouter = express.Router();
-const router = roleRouter;
+const router = express.Router();
+
+export default router;
 
 router.use(async (req, res, next) => {
   try {
@@ -80,5 +81,3 @@ router.put("/", async (req, res) => {
     res.status(400).json(error.message);
   }
 });
-
-export default roleRouter;

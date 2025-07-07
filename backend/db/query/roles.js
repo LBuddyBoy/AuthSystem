@@ -36,7 +36,7 @@ export async function createRole({ name, weight, is_default, is_staff, icon }) {
 export async function deleteRole(id) {
   const SQL = `
     DELETE FROM roles
-    WHERE id = $1
+    WHERE id = $1 AND is_default = false
     RETURNING *
     `;
 

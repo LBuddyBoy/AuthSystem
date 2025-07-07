@@ -6,48 +6,25 @@ import {
   getAccountsByField,
   updateAccount,
 } from "#db/query/accounts";
-import db from "#db/client";
+import getStats from "#db/query/stats";
+import requireAccount from "#middleware/requireAccount";
+import requirePermission from "#middleware/requirePermission";
 
-const authRouter = express.Router();
-const router = authRouter;
+const router = express.Router();
 
-router.use(async (req, res, next) => {
-  try {
-    if (!(await useAuth(req, res))) return;
+export default router;
 
-    next();
-  } catch (error) {
-    console.log(error);
-    res.status(400).json(error);
-  }
-});
+router.use(requireAccount);
+router.use(requirePermission("admin:panel"));
 
 router.get("/", async (req, res) => {
   res.status(200).json("Access Granted");
 });
 
 router.get("/stats", async (req, res) => {
-  const SQL = `
-  SELECT
-  (SELECT COUNT(*) FROM accounts) AS accounts,
-  (SELECT COUNT(*) FROM roles) AS roles;
-  `;
+  const stats = await getStats();
 
-  const { rows } = await db.query(SQL);
-
-  res.status(200).json(rows[0]);
-});
-
-router.get("/status", async (req, res) => {
-  const SQL = `
-  SELECT
-  (SELECT COUNT(*) FROM accounts) AS accounts,
-  (SELECT COUNT(*) FROM roles) AS roles;
-  `;
-
-  const { rows } = await db.query(SQL);
-
-  res.status(200).json(rows[0]);
+  res.status(200).json(stats);
 });
 
 router.get("/accounts/search/:field/:query", async (req, res) => {
@@ -57,12 +34,7 @@ router.get("/accounts/search/:field/:query", async (req, res) => {
     return res.status(400).json("Couldn't find a provided query.");
   }
 
-  try {
-    res.status(200).json(await getAccountsByField(field, query));
-  } catch (error) {
-    res.status(400).json(error.message);
-    console.log(error);
-  }
+  res.status(200).json(await getAccountsByField(field, query));
 });
 
 router.get("/accounts/:limit/:cursor", async (req, res) => {
@@ -106,4 +78,20 @@ router.put("/account", async (req, res) => {
   res.status(200).json(account);
 });
 
-export default authRouter;
+router.delete("/account", async (req, res) => {
+  if (!req.body) {
+    return res.status(400).json("Invalid body provided.");
+  }
+
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json("Missing account id.");
+  }
+
+  try {
+    res.status(204).json("Account Deleted");
+  } catch (error) {
+    return res.status(400).json(error.detail);
+  }
+});

@@ -28,11 +28,15 @@ export function AccountProvider({ children }) {
           },
           body: JSON.stringify({ jwt: token }),
         });
+
         const result = await response.json();
+
+        if (!response.ok) {
+          throw result;
+        }
 
         setAccount(result);
       } catch (error) {
-        console.log(error);
         localStorage.removeItem("token");
       } finally {
         setLoading(false);
@@ -104,6 +108,8 @@ export function AccountProvider({ children }) {
     if (!account) {
       throw new Error("No account found to check permissions.");
     }
+
+    console.log(account);
 
     return (
       account.role.permissions.includes(permission) ||
