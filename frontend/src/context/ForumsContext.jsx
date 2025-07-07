@@ -12,12 +12,12 @@ export function ForumsProvider({ children }) {
   if (loading || !forums) return <Loading></Loading>;
 
   const updatePost = async ({id, payload}) => {
-    const response = await fetch(`${API}/posts`, {
+    const response = await fetch(`${API}/posts/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id, ...payload }),
+      body: JSON.stringify({ ...payload }),
     });
 
     const result = await response.json();

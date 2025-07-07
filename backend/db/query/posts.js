@@ -1,6 +1,18 @@
 import db from "#db/client";
 import { MAPPED_ACCOUNT_RETURNS } from "./accounts.js";
 
+export async function createPost(title, body, forum_id, account_id) {
+  const SQL = `
+  INSERT INTO posts(title, body, forum_id, account_id)
+  VALUES($1, $2, $3, $4)
+  RETURNING *
+  `;
+
+  const {rows: [post]} = await db.query(SQL, [title, body, forum_id, account_id]);
+
+  return post;
+}
+
 export async function getPostsByField(field, value) {
     const SQL = `
     SELECT posts.*, row_to_json(accounts) AS account,
@@ -12,6 +24,7 @@ export async function getPostsByField(field, value) {
       JOIN roles ON roles.id = accounts.role_id
     ) accounts ON posts.account_id = accounts.id
     WHERE posts.${field} = $1
+    ORDER BY posts.created_at
     `;
 
     const { rows } = await db.query(SQL, [value]);

@@ -1,5 +1,9 @@
 import db from "#db/client";
-import { updateRole } from "./query/roles.js";
+import { createAccount, getAccounts } from "./query/accounts.js";
+import { createForum } from "./query/forums.js";
+import { createPost } from "./query/posts.js";
+import { createReply } from "./query/replies.js";
+import { createRole, updateRole } from "./query/roles.js";
 import { base, de, de_CH, en, Faker } from "@faker-js/faker";
 
 const customLocale = {
@@ -20,85 +24,6 @@ await seedForums();
 await seedPosts();
 await db.end();
 console.log("🌱 Database seeded.");
-
-async function createForum({ name, description }) {
-  const SQL = `
-  INSERT INTO forums(name, description) 
-  VALUES($1, $2)
-  RETURNING *
-  `;
-  const params = [name, description];
-
-  const {
-    rows: [forum],
-  } = await db.query(SQL, params);
-
-  return forum;
-}
-
-async function createPost({ forum_id, account_id, title, body }) {
-  const SQL = `
-  INSERT INTO posts(forum_id, account_id, title, body) 
-  VALUES($1, $2, $3, $4)
-  RETURNING *
-  `;
-  const params = [forum_id, account_id, title, body];
-
-  const {
-    rows: [post],
-  } = await db.query(SQL, params);
-
-  return post;
-}
-
-async function createReply({ post_id, forum_id, account_id, message }) {
-  const SQL = `
-  INSERT INTO replies(post_id, forum_id, account_id, message) 
-  VALUES($1, $2, $3, $4)
-  RETURNING *
-  `;
-  const params = [post_id, forum_id, account_id, message];
-
-  const {
-    rows: [reply],
-  } = await db.query(SQL, params);
-
-  return reply;
-}
-
-async function createAccount({ username, email, password, role_id }) {
-  const SQL = `
-  INSERT INTO accounts(username, email, password, role_id) 
-  VALUES($1, $2, crypt($3, gen_salt('bf')), $4)
-  RETURNING *
-  `;
-  const params = [username, email, password, role_id];
-
-  const {
-    rows: [account],
-  } = await db.query(SQL, params);
-
-  console.log(account);
-
-  return account;
-}
-
-async function createRole({ name, weight, is_default, is_staff, icon }) {
-  const SQL = `
-  INSERT INTO roles(name, weight, is_default, is_staff, icon) 
-  VALUES($1, $2, $3, $4, $5)
-  RETURNING *
-  `;
-  const params = [name, weight, is_default, is_staff, icon];
-
-  const {
-    rows: [role],
-  } = await db.query(SQL, params);
-
-  console.log(role);
-
-  return role;
-}
 
 async function seedAccounts() {
   const accounts = [
@@ -142,7 +67,7 @@ async function seedAccounts() {
   for (const index in accounts) {
     const account = accounts[index];
 
-    await createAccount(account);
+    await createAccount(account.username, account.email, account.password);
   }
 }
 
@@ -181,7 +106,13 @@ async function seedRoles() {
   for (const index in roles) {
     const role = roles[index];
 
-    await createRole(role);
+    await createRole(
+      role.name,
+      role.weight,
+      role.is_default,
+      role.is_staff,
+      role.icon
+    );
   }
 
   await updateRole(3, {
@@ -198,26 +129,44 @@ async function seedForums() {
     {
       name: "Announcements",
       description: "This will show you all important announcements.",
+      allows_replies: true,
+      required_permission: "",
     },
-    { name: "Updates", description: "This will show all of the updates." },
-    { name: "Games", description: "This will show you all the games." },
+    {
+      name: "Updates",
+      description: "This will show all of the updates.",
+      allows_replies: true,
+      required_permission: "",
+    },
+    {
+      name: "Games",
+      description: "This will show you all the games.",
+      allows_replies: true,
+      required_permission: "",
+    },
   ];
 
   for (const index in forums) {
     const forum = forums[index];
 
-    await createForum(forum);
+    await createForum(
+      forum.name,
+      forum.description,
+      forum.allows_replies,
+      forum.required_permission
+    );
   }
 }
 
 async function seedPosts() {
+  const accounts = await getAccounts(100, 0);
   const posts = [];
   const newPosts = [];
 
   for (let index = 0; index < 20; index++) {
     const post = {
       forum_id: getRandomInt(1, 3),
-      account_id: 1,
+      account_id: getRandomInt(1, accounts.length),
       title: customFaker.book.title(),
       body: customFaker.lorem.paragraph(),
     };
@@ -228,7 +177,7 @@ async function seedPosts() {
   for (const index in posts) {
     const post = posts[index];
 
-    newPosts.push(await createPost(post));
+    newPosts.push(await createPost(post.title, post.body, post.forum_id, post.account_id));
   }
 
   await seedReplies(newPosts);
@@ -252,7 +201,7 @@ async function seedReplies(newPosts) {
   for (const index in replies) {
     const reply = replies[index];
 
-    await createReply(reply);
+    await createReply(reply.message, reply.post_id, reply.account_id);
   }
 }
 

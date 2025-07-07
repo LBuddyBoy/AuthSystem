@@ -1,14 +1,14 @@
 import db from "#db/client";
 import { MAPPED_ACCOUNT_RETURNS } from "./accounts.js";
 
-export async function createReply(post_id, forum_id, account_id, message) {
+export async function createReply(message, post_id, account_id) {
     const sql = `
-    INSERT INTO replies(post_id, forum_id, account_id, message)
+    INSERT INTO replies(message, post_id, account_id)
     VALUES($1, $2, $3, $4)
     RETURNING *
     `;
 
-    const {rows: [reply]} = await db.query(sql, [post_id, forum_id, account_id, message]);
+    const {rows: [reply]} = await db.query(sql, [message, post_id, account_id]);
 
     return reply;
 }
