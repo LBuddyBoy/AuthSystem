@@ -1,5 +1,5 @@
 import Button from "../../../../components/Button";
-import { useAdminAccount } from "../context/AdminAccountContext";
+import { useAdminAccount } from "../../../../context/AdminAccountContext";
 
 export default function AccountsButtons() {
   const { handleNextPage, handlePreviousPage } = useAdminAccount();

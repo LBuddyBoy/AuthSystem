@@ -32,8 +32,7 @@ export async function deleteReplyById(id) {
 export async function updateReply(reply_id, message) {
     const SQL = `
     UPDATE replies
-    SET message = $1
-    SET last_edited = now()
+    SET message = $1, last_edited = now(), has_been_edited = true
     WHERE id = $2
     RETURNING *
     `;

@@ -1,6 +1,6 @@
 import AdminAccounts from "./AdminAccounts";
 import "./adminAccounts.css";
-import { AdminAccountProvider } from "./context/AdminAccountContext";
+import { AdminAccountProvider } from "../../../context/AdminAccountContext";
 
 export default function AdminAccountLayout() {
   return (

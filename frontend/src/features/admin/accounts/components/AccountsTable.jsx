@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "../../../../context/AccountContext";
-import { useAdminAccount } from "../context/AdminAccountContext";
+import { useAdminAccount } from "../../../../context/AdminAccountContext";
+import useMutation from "../../../../hooks/useMutation";
 
 export default function AccountsTable() {
   return (
@@ -32,11 +33,14 @@ function TableBody() {
     setSelected,
     formData,
     setFormData,
-    setUpdated,
     setError,
     roles,
   } = useAdminAccount();
-  const { update } = useAccount();
+  const { mutate, loading, error, data } = useMutation(
+    "/admin/account",
+    "PUT",
+    ["accounts"]
+  );
 
   const startEditing = (e, account) => {
     e.preventDefault();
@@ -55,9 +59,8 @@ function TableBody() {
   const saveEdits = async (e) => {
     e.preventDefault();
     try {
-      await update({ id: selected.id, payload: formData });
+      await mutate({ id: selected.id, ...formData });
       setSelected(null);
-      setUpdated((current) => current + 1);
     } catch (error) {
       setError(error.message);
     }

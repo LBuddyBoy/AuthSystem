@@ -1,7 +1,7 @@
 import AccountsTable from "./components/AccountsTable";
 import AccountsSearch from "./components/AccountsSearch";
 import AccountsButtons from "./components/AccountsButtons";
-import { useAdminAccount } from "./context/AdminAccountContext";
+import { useAdminAccount } from "../../../context/AdminAccountContext";
 
 export default function AdminAccounts() {
   const { error } = useAdminAccount();

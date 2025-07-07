@@ -21,7 +21,7 @@ export default function useQuery(resource, tag, deps = []) {
       }
     } finally {
       if (isMounted) {
-              setLoading(false);
+        setLoading(false);
       }
     }
   };

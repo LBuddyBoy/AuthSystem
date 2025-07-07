@@ -5,7 +5,7 @@ export default function AdminLayout() {
   return (
     <>
       <div className="admin">
-        <AdminBar />
+        <AdminBar/>
         <Outlet />
       </div>
     </>

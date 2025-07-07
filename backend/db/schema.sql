@@ -59,6 +59,7 @@ CREATE TABLE replies(
     id serial PRIMARY KEY,
     message text NOT NULL,
     created_at timestamp DEFAULT now(),
+    has_been_edited boolean DEFAULT false,
     last_edited timestamp DEFAULT now(),
     forum_id integer REFERENCES forums(id) ON DELETE CASCADE,
     post_id integer REFERENCES posts(id) ON DELETE CASCADE,

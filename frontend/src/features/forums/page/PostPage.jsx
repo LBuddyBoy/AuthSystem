@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import useQuery from "../../../hooks/useQuery";
 import Loading from "../../../components/Loading";
-import PostReplies from "../components/post/PostReplies";
+import Replies from "../components/post/Replies";
 import "../style/postPage.css";
 import { useForums } from "../../../context/ForumsContext";
 import PostHeader from "../components/post/PostHeader";
@@ -11,7 +11,7 @@ import CreateReply from "../components/post/CreateReply";
 export default function PostPage() {
   const { id } = useParams();
   const { editing } = useForums();
-  const { loading, data: post } = useQuery("/posts/" + id, [editing]);
+  const { loading, data: post } = useQuery("/posts/" + id, "post");
 
   if (loading || !post) return <Loading></Loading>;
 
@@ -20,7 +20,7 @@ export default function PostPage() {
       <PostHeader post={post} />
       <PostBody post={post} />
       <CreateReply post={post} />
-      <PostReplies post={post} />
+      <Replies post={post} />
     </div>
   );
 }

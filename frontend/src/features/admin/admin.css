@@ -5,7 +5,6 @@
 
 .admin {
   background: var(--bg-color);
-  display: flex;
 }
 
 .adminPanel {
@@ -13,7 +12,6 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  margin-left: 50px;
 }
 
 .adminDashboard {
@@ -50,9 +48,17 @@
 }
 
 .statCards {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.4rem;
   margin-top: 0.2rem;
+  width: 100%;
+}
+
+/* Center last card if odd count */
+.statCards > :nth-last-child(1):nth-child(odd) {
+  grid-column: 1 / -1;
+  justify-self: center;
 }
 
 .adminStatistic {
@@ -87,10 +93,16 @@
     padding: 1.2rem 0.4rem;
     min-width: unset;
     gap: 1.2rem;
+    width: 100%;
+    max-width: 400px;
   }
-  .systemCards {
-    flex-direction: column;
+  .statCards {
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-    align-items: center;
+    width: 100%;
+  }
+  .adminStatistic {
+    min-width: 90px;
+    padding: 0.8rem 0.6rem;
   }
 }

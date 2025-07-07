@@ -1,9 +1,15 @@
 import { useCurrentEditor } from "@tiptap/react";
 import { useForums } from "../../../../context/ForumsContext";
+import useMutation from "../../../../hooks/useMutation";
 
 export default function PostEditorButtons({ post }) {
-  const { setEditing, updatePost } = useForums();
+  const { setEditing } = useForums();
   const { editor } = useCurrentEditor();
+  const { mutate, loading, error, data } = useMutation(
+    `/posts/${post.id}`,
+    "PUT",
+    ["post"]
+  );
 
   const stopEditing = (e) => {
     e.preventDefault();
@@ -12,11 +18,9 @@ export default function PostEditorButtons({ post }) {
 
   const saveChanges = async (e) => {
     try {
-      await updatePost({
+      await mutate({
         id: post.id,
-        payload: {
-          body: editor.getHTML()
-        }
+        body: editor.getHTML(),
       });
       setEditing(false);
     } catch (error) {

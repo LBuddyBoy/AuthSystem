@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAPI } from "../context/APIContext";
 
-export default async function useMutation(resource, method, tagsToInvalidate) {
+export default function useMutation(resource, method, tagsToInvalidate) {
   const { request, invalidateTags } = useAPI();
 
   const [data, setData] = useState();
@@ -16,6 +16,7 @@ export default async function useMutation(resource, method, tagsToInvalidate) {
         method,
         body: JSON.stringify(body),
       });
+      console.log(result);
       setData(result);
       invalidateTags(tagsToInvalidate);
     } catch (e) {

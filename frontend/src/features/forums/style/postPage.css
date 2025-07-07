@@ -128,6 +128,7 @@
   color: #fff;
   transition: background var(--transition), opacity var(--transition);
 }
+
 .postButtons .editBtn { background: var(--primary); }
 .postButtons .deleteBtn { background: var(--danger-bg); color: var(--danger); }
 .postBody .cancelBtn { background: var(--color-border); color: var(--danger); border: 1.5px solid var(--danger);}
@@ -187,7 +188,9 @@
   color: var(--text-color);
   opacity: 0.85;
   margin-bottom: 0.4em;
+  width: 100%;
 }
+
 .replyByLine img {
   width: 28px;
   height: 28px;

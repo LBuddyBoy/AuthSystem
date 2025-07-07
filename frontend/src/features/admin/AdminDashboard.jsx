@@ -18,9 +18,11 @@ function Statistics() {
   return (
     <section className="adminStats">
       <div className="statCards">
-        <StatCard title="Total Accounts" value={data.accounts} />
-        <StatCard title="Total Roles" value={data.roles} />
-        <StatCard title="Total Posts" value="N/A" />
+        <StatCard title="Accounts" value={data.accounts} />
+        <StatCard title="Roles" value={data.roles} />
+        <StatCard title="Forums" value={data.forums} />
+        <StatCard title="Posts" value={data.posts} />
+        <StatCard title="Replies" value={data.replies} />
       </div>
     </section>
   );
