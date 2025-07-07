@@ -1,38 +1,36 @@
 import { useEffect, useState } from "react";
-import { useAccount } from "../context/AccountContext";
-import { API } from "../context/AccountContext";
+import { useAPI } from "../context/APIContext";
 
-export default function useQuery(resource, deps = []) {
+export default function useQuery(resource, tag, deps = []) {
+  const { request, provideTag } = useAPI();
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
-  const { token } = useAccount();
+
+  const query = async (isMounted = true) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await request(resource);
+      setData(result);
+    } catch (e) {
+      if (isMounted) {
+        console.error(e);
+        setError(e.message);
+      }
+    } finally {
+      if (isMounted) {
+              setLoading(false);
+      }
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
-    setLoading(true);
-    setError(null);
 
-    fetch(API + resource, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token,
-      },
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        if (isMounted) {
-          setData(result);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          setError(err.message);
-          setLoading(false);
-        }
-      });
+    if (tag) provideTag(tag, query);
+    query(isMounted);
 
     return () => {
       isMounted = false;

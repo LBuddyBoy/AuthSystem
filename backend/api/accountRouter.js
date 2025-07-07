@@ -16,10 +16,8 @@ router.post(
   "/signup",
   requireBody(["username", "email", "password"]),
   async (req, res) => {
-    const { username, email, password } = req.body;
-
     try {
-      const account = await createAccount({ username, email, password });
+      const account = await createAccount(req.body);
 
       res.status(201).json(account);
     } catch (error) {
@@ -28,13 +26,8 @@ router.post(
   }
 );
 
-router.post("/login", async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json("Invalid body provided.");
-  }
-
-  const { email, password } = req.body;
-  const account = await validateAccount({ email, password });
+router.post("/login", requireBody(["email", "password"]), async (req, res) => {
+  const account = await validateAccount(req.body);
 
   if (!account) {
     return res.status(400).json("Incorrect password or email provided.");
@@ -48,11 +41,7 @@ router.post("/login", async (req, res) => {
   });
 });
 
-router.post("/verify", async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json("Invalid body provided.");
-  }
-
+router.post("/verify", requireBody(["jwt"]), async (req, res) => {
   const { jwt } = req.body;
   const id = await validateJWT(jwt);
 

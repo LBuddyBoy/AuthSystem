@@ -1,4 +1,6 @@
 import { getRoleById, getRoles, updateRole, deleteRole, createRole } from "#db/query/roles";
+import requireAccount from "#middleware/requireAccount";
+import requirePermission from "#middleware/requirePermission";
 import { isValidId, useAuth } from "./utils.js";
 import express from "express";
 
@@ -6,16 +8,8 @@ const router = express.Router();
 
 export default router;
 
-router.use(async (req, res, next) => {
-  try {
-    if (!(await useAuth(req, res))) return;
-
-    next();
-  } catch (error) {
-    console.log(error);
-    res.status(400).json(error);
-  }
-});
+router.use(requireAccount);
+router.use(requirePermission("admin:panel"));
 
 router.get("/", async (req, res) => {
   res.status(200).json(await getRoles());

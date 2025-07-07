@@ -5,7 +5,10 @@ import { getDefaultRole } from "./roles.js";
 export const ACCOUNT_RETURNS = `id, username, email, role_id, first_name, last_name, created_at, avatar_url`;
 export const ROLE_RETURNS = `id, name, weight, icon, is_default, is_staff, permissions, inheritance`;
 
-export const MAPPED_ACCOUNT_RETURNS = (identifier) => ACCOUNT_RETURNS.split(", ").map(s => identifier + "." + s).toString();
+export const MAPPED_ACCOUNT_RETURNS = (identifier) =>
+  ACCOUNT_RETURNS.split(", ")
+    .map((s) => identifier + "." + s)
+    .toString();
 export const MAPPED_ROLE_RETURNS = ROLE_RETURNS.split(", ")
   .map((s) => "r." + s + " AS role_" + s)
   .toString();
@@ -20,7 +23,7 @@ export const MAPPED_ROLE_RETURNS = ROLE_RETURNS.split(", ")
  * @returns undefined if it can't be created
  *
  */
-export async function createAccount({ username, email, password }) {
+export async function createAccount({ username, email, password, role_id }) {
   const SQL = `
     INSERT INTO accounts(username, email, password, role_id)
     VALUES($1, $2, crypt($3, gen_salt('bf')), $4)
@@ -28,17 +31,24 @@ export async function createAccount({ username, email, password }) {
     `;
 
   try {
-    const defaultRole = await getDefaultRole();
+    if (!role_id) {
+      const defaultRole = await getDefaultRole();
 
-    if (!defaultRole) {
-      throw new Error("Couldn't find a default role.");
+      if (!defaultRole && !role_id) {
+        throw new Error("Couldn't find a default role.");
+      }
+
+      role_id = defaultRole.id;
     }
 
     const {
       rows: [account],
-    } = await db.query(SQL, [username, email, password, defaultRole.id]);
-
-    console.log(account);
+    } = await db.query(SQL, [
+      username,
+      email,
+      password,
+      role_id
+    ]);
 
     return account;
   } catch (error) {
@@ -119,7 +129,13 @@ export async function getAccountById(id) {
  * @returns
  */
 export async function getAccountsByField(field, value) {
-  const allowedFields = ["username", "email", "first_name", "last_name", "role_id"];
+  const allowedFields = [
+    "username",
+    "email",
+    "first_name",
+    "last_name",
+    "role_id",
+  ];
 
   if (!allowedFields.includes(field)) {
     throw new Error("Invalid search field");

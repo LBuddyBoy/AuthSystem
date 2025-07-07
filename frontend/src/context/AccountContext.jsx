@@ -1,9 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import Loading from "../components/Loading";
+import { API } from "./APIContext";
 
 const AccountContext = createContext();
-
-export const API = "http://localhost:5000";
 
 export function AccountProvider({ children }) {
   const [loading, setLoading] = useState(false);
@@ -84,7 +83,6 @@ export function AccountProvider({ children }) {
       throw result;
     }
 
-    console.log(result);
   };
 
   const update = async ({ id, payload }) => {
@@ -108,8 +106,6 @@ export function AccountProvider({ children }) {
     if (!account) {
       throw new Error("No account found to check permissions.");
     }
-
-    console.log(account);
 
     return (
       account.role.permissions.includes(permission) ||

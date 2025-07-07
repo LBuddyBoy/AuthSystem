@@ -7,8 +7,6 @@
  */
 export default function requirePermission(permission) {
   return (req, res, next) => {
-    console.log(req.account);
-    console.log(req.account.role.permissions);
     if (!req.account.role.permissions.includes(permission)) {
       return res
         .status(403)

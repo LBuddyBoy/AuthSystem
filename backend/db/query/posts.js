@@ -1,20 +1,22 @@
 import db from "#db/client";
 import { MAPPED_ACCOUNT_RETURNS } from "./accounts.js";
 
-export async function createPost(title, body, forum_id, account_id) {
+export async function createPost({ title, body, forum_id, account_id }) {
   const SQL = `
   INSERT INTO posts(title, body, forum_id, account_id)
   VALUES($1, $2, $3, $4)
   RETURNING *
   `;
 
-  const {rows: [post]} = await db.query(SQL, [title, body, forum_id, account_id]);
+  const {
+    rows: [post],
+  } = await db.query(SQL, [title, body, forum_id, account_id]);
 
   return post;
 }
 
 export async function getPostsByField(field, value) {
-    const SQL = `
+  const SQL = `
     SELECT posts.*, row_to_json(accounts) AS account,
     (SELECT COUNT(*) FROM replies WHERE post_id = posts.id) AS replies
     FROM posts
@@ -27,9 +29,9 @@ export async function getPostsByField(field, value) {
     ORDER BY posts.created_at
     `;
 
-    const { rows } = await db.query(SQL, [value]);
+  const { rows } = await db.query(SQL, [value]);
 
-    return rows;
+  return rows;
 }
 
 export async function updatePost(id, fields) {
@@ -55,7 +57,7 @@ export async function updatePost(id, fields) {
 }
 
 export async function getPostById(id) {
-    const SQL = `
+  const SQL = `
     SELECT posts.*, row_to_json(accounts) AS account,
     (SELECT COUNT(*) FROM replies WHERE post_id = posts.id) AS replies
     FROM posts
@@ -67,7 +69,9 @@ export async function getPostById(id) {
     WHERE posts.id = $1
     `;
 
-    const { rows: [post] } = await db.query(SQL, [id]);
+  const {
+    rows: [post],
+  } = await db.query(SQL, [id]);
 
-    return post;
+  return post;
 }

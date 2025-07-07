@@ -24,13 +24,7 @@ router.post(
   "/",
   requireBody(["name", "description", "allows_replies", "required_permission"]),
   async (req, res) => {
-    const { name, description, allows_replies, required_permission } = req.body;
-    const forum = await createForum(
-      name,
-      description,
-      allows_replies,
-      required_permission
-    );
+    const forum = await createForum(req.body);
 
     if (!forum) {
       return;

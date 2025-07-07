@@ -1,12 +1,14 @@
 import { useContext, createContext, useState } from "react";
 import useQuery from "../../../../hooks/useQuery";
 import Loading from "../../../../components/Loading";
+import { useAPI } from "../../../../context/APIContext";
 
 const AdminAccountContext = createContext();
 
 export const PAGE_SIZE = 10;
 
 export function AdminAccountProvider({ children }) {
+  const { invalidateTags } = useAPI();
   const [cursor, setCursor] = useState(0);
   const [updated, setUpdated] = useState(0);
   const [queryData, setQueryData] = useState();
@@ -15,7 +17,7 @@ export function AdminAccountProvider({ children }) {
   const [error, setError] = useState();
   const { loading, data } = useQuery(
     "/admin/accounts/" + PAGE_SIZE + "/" + cursor,
-    [cursor, updated]
+    "accounts", [cursor],
   );
   const { loading: rolesLoading, data: roles } = useQuery("/roles");
 
@@ -24,6 +26,9 @@ export function AdminAccountProvider({ children }) {
   }
 
   const { accounts, nextCursor } = data;
+
+  console.log("Cursor ", cursor);
+  console.log("Next Cursor ", data.nextCursor);
 
   const handleNextPage = (e) => {
     e.preventDefault();

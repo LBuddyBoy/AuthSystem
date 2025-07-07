@@ -5,6 +5,7 @@ import {
   updatePost,
 } from "#db/query/posts";
 import { createReply, getRepliesByPost } from "#db/query/replies";
+import requireAccount from "#middleware/requireAccount";
 import requireBody from "#middleware/requireBody";
 import express from "express";
 const router = express.Router();
@@ -16,7 +17,7 @@ router.post(
   requireBody(["title", "body", "forum_id"]),
   async (req, res) => {
     const { title, body, forum_id } = req.body;
-    const post = await createPost(title, body, forum_id);
+    const post = await createPost({ title, body, forum_id });
 
     res.status(201).json(post);
   }
@@ -59,20 +60,17 @@ router.get("/:id/replies", async (req, res) => {
   res.status(200).json(await getRepliesByPost(req.post.id));
 });
 
-router.put("/:id/replies", requireBody(["message"]), async (req, res) => {
+router.post("/:id/replies", requireAccount, requireBody(["message"]), async (req, res) => {
   const { message } = req.body;
-  const reply = await createReply(message, req.post.id, req.account.id);
+  const reply = await createReply({
+    message: message,
+    account_id: req.account.id,
+    post_id: req.post.id,
+    forum_id: req.post.forum_id,
+  });
 
   if (!reply)
     return res.status(400).json("There was an error creating a reply.");
 
   res.status(201).json(reply);
 });
-
-router.param("replyId", (req, res, next, id) => {
-  
-})
-
-router.delete("/:id/replies/:replyId", async (req, res) => {
-  
-})

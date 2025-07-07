@@ -1,7 +1,7 @@
 import { useContext, createContext, useState } from "react";
 import useQuery from "../hooks/useQuery";
 import Loading from "../components/Loading";
-import { API } from "./AccountContext";
+import { API } from "./APIContext";
 
 const ForumsContext = createContext();
 

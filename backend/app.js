@@ -5,6 +5,7 @@ import authRouter from "#api/adminRouter";
 import roleRouter from "#api/roleRouter";
 import forumRouter from "#api/forumRouter";
 import postRouter from "#api/postRouter";
+import repliesRouter from "#api/repliesRouter";
 import morgan from "morgan";
 import { getAccountByToken } from "#middleware/getAccountByToken";
 
@@ -17,6 +18,7 @@ app.use(morgan("dev"));
 app.use(getAccountByToken);
 
 app.use("/account", accountRouter);
+app.use("/replies", repliesRouter);
 app.use("/admin", authRouter);
 app.use("/forums", forumRouter);
 app.use("/posts", postRouter);

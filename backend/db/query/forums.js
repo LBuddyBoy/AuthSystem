@@ -1,6 +1,6 @@
 import db from "#db/client";
 
-export async function createForum(name, description, allows_replies, required_permission) {
+export async function createForum({name, description, allows_replies, required_permission}) {
   const SQL = `
   INSERT INTO forums(name, description, allows_replies, required_permission)
   VALUES($1, $2, $3, $4)

@@ -1,5 +1,5 @@
 import db from "#db/client";
-import { createAccount, getAccounts } from "./query/accounts.js";
+import { createAccount, getAccounts, updateAccount } from "./query/accounts.js";
 import { createForum } from "./query/forums.js";
 import { createPost } from "./query/posts.js";
 import { createReply } from "./query/replies.js";
@@ -12,6 +12,29 @@ const customLocale = {
     domainSuffix: ["test"],
   },
 };
+
+const AVATAR_URLS = [
+  "https://www.gravatar.com/avatar/?d=mp&s=128",
+  "https://api.dicebear.com/7.x/thumbs/svg?seed=oak",
+  "https://api.dicebear.com/7.x/thumbs/svg?seed=banana",
+  "https://api.dicebear.com/7.x/thumbs/svg?seed=avocado",
+  "https://api.dicebear.com/7.x/thumbs/svg?seed=flamingo",
+  "https://api.dicebear.com/7.x/thumbs/svg?seed=cucumber",
+  "https://api.dicebear.com/7.x/thumbs/svg?seed=wave",
+  "https://api.dicebear.com/7.x/thumbs/svg?seed=breeze",
+  "https://api.dicebear.com/7.x/thumbs/svg?seed=cloud",
+  "https://api.dicebear.com/7.x/thumbs/svg?seed=astro",
+  "https://api.dicebear.com/7.x/pixel-art/svg?seed=astronaut",
+  "https://api.dicebear.com/7.x/pixel-art/svg?seed=robot",
+  "https://api.dicebear.com/7.x/pixel-art/svg?seed=doge",
+  "https://api.dicebear.com/7.x/pixel-art/svg?seed=dragon",
+  "https://api.dicebear.com/7.x/bottts/svg?seed=orca",
+  "https://api.dicebear.com/7.x/bottts/svg?seed=panther",
+  "https://api.dicebear.com/7.x/bottts/svg?seed=octopus",
+  "https://api.dicebear.com/7.x/bottts/svg?seed=bunny",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=fox",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=owl",
+];
 
 export const customFaker = new Faker({
   locale: [customLocale, de_CH, de, en, base],
@@ -67,7 +90,13 @@ async function seedAccounts() {
   for (const index in accounts) {
     const account = accounts[index];
 
-    await createAccount(account.username, account.email, account.password);
+    await createAccount(account);
+  }
+
+  for (let index = 1; index <= 500; index++) {
+    await updateAccount(index, {
+      avatar_url: AVATAR_URLS[getRandomInt(1, AVATAR_URLS.length) - 1],
+    });
   }
 }
 
@@ -106,13 +135,7 @@ async function seedRoles() {
   for (const index in roles) {
     const role = roles[index];
 
-    await createRole(
-      role.name,
-      role.weight,
-      role.is_default,
-      role.is_staff,
-      role.icon
-    );
+    await createRole(role);
   }
 
   await updateRole(3, {
@@ -149,24 +172,19 @@ async function seedForums() {
   for (const index in forums) {
     const forum = forums[index];
 
-    await createForum(
-      forum.name,
-      forum.description,
-      forum.allows_replies,
-      forum.required_permission
-    );
+    await createForum(forum);
   }
 }
 
 async function seedPosts() {
-  const accounts = await getAccounts(100, 0);
+  const query = await getAccounts(20, null);
   const posts = [];
   const newPosts = [];
 
   for (let index = 0; index < 20; index++) {
     const post = {
       forum_id: getRandomInt(1, 3),
-      account_id: getRandomInt(1, accounts.length),
+      account_id: getRandomInt(1, query.accounts.length),
       title: customFaker.book.title(),
       body: customFaker.lorem.paragraph(),
     };
@@ -177,13 +195,14 @@ async function seedPosts() {
   for (const index in posts) {
     const post = posts[index];
 
-    newPosts.push(await createPost(post.title, post.body, post.forum_id, post.account_id));
+    newPosts.push(await createPost(post));
   }
 
   await seedReplies(newPosts);
 }
 
 async function seedReplies(newPosts) {
+  const query = await getAccounts(20, null);
   const replies = [];
 
   for (let index = 0; index < 100; index++) {
@@ -191,7 +210,7 @@ async function seedReplies(newPosts) {
     const reply = {
       post_id: post.id,
       forum_id: post.forum_id,
-      account_id: 1,
+      account_id: getRandomInt(1, query.accounts.length),
       message: customFaker.lorem.text(),
     };
 
@@ -201,7 +220,7 @@ async function seedReplies(newPosts) {
   for (const index in replies) {
     const reply = replies[index];
 
-    await createReply(reply.message, reply.post_id, reply.account_id);
+    await createReply(reply);
   }
 }
 
