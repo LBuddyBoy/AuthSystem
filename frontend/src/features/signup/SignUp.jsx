@@ -26,8 +26,8 @@ export default function SignUp() {
   return (
     <form id="signupForm" action={handleSubmit}>
       <h1>Create an Account</h1>
-      <input name="username" placeholder="Username" type="text" required />
       <input name="email" placeholder="Email" type="email" required />
+      <input name="username" placeholder="Username" type="text" required />
       <input name="password" placeholder="Password" type="password" required />
       {error && <Error error={error}/>}
       <Button id={"signupBtn"} text={"Sign Up"} />

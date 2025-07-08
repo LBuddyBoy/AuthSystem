@@ -58,7 +58,7 @@ export default function CreatePostPage() {
 function Buttons({ title, forumId, setError }) {
   const { editor } = useCurrentEditor();
   const navigate = useNavigate();
-  const { mutate, loading, error, data } = useMutation("/posts", "POST", [
+  const { mutate, loading } = useMutation("/posts", "POST", [
     "forum",
     "forums",
     "posts",
@@ -106,12 +106,9 @@ function Buttons({ title, forumId, setError }) {
   return (
     <div className="postCreationButtons">
       {loading ? (
-        <>
-          <Loading />
-        </>
+        <Loading />
       ) : (
         <>
-          {" "}
           <button className="cancelBtn" onClick={handleCancel}>
             Cancel
           </button>

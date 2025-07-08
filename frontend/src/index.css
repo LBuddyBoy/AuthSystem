@@ -3,6 +3,27 @@
   --bg-accent: #fff;
   --color-border: #e0e0e0;
   --text-color: #222;
+  --primary: #33c0eb;
+  --secondary: #58d3d3;
+  --primary-dark: #375597;
+  --danger: #e64848;
+  --danger-bg: #fae0e0;
+  --font-main: "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.2rem;
+  --radius: 12px;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1.5px 6px rgba(0, 0, 0, 0.03);
+  --spacing: 1.1rem;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 
+
+  --bg-color: #f6f8fa;
+  --bg-accent: #fff;
+  --color-border: #e0e0e0;
+  --text-color: #222;
   --primary: #33eb67;
   --secondary: #58d37b;
   --primary-dark: #37976b;
@@ -16,9 +37,10 @@
   --shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1.5px 6px rgba(0, 0, 0, 0.03);
   --spacing: 1.1rem;
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
 
-[data-theme="dark"] {
+*/
+
+/* 
   --bg-color: #181d22;
   --bg-accent: #22272e;
   --color-border: #30363d;
@@ -26,6 +48,19 @@
   --primary: #40f07e;
   --secondary: #8de2a5;
   --primary-dark: #17db65d5;
+  --danger: #ff7676;
+  --danger-bg: #492323;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.25), 0 1.5px 6px rgba(0, 0, 0, 0.15);
+*/
+
+[data-theme="dark"] {
+  --bg-color: #181d22;
+  --bg-accent: #22272e;
+  --color-border: #30363d;
+  --text-color: #e2eafc;
+  --primary: #33c0eb;
+  --secondary: #58d3d3;
+  --primary-dark: #376997;
   --danger: #ff7676;
   --danger-bg: #492323;
   --shadow: 0 4px 24px rgba(0, 0, 0, 0.25), 0 1.5px 6px rgba(0, 0, 0, 0.15);
