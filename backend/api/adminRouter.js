@@ -14,17 +14,17 @@ const router = express.Router();
 
 export default router;
 
+router.get("/stats", async (req, res) => {
+  const stats = await getStats();
+
+  res.status(200).json(stats);
+});
+
 router.use(requireAccount);
 router.use(requirePermission("admin:panel"));
 
 router.get("/", async (req, res) => {
   res.status(200).json("Access Granted");
-});
-
-router.get("/stats", async (req, res) => {
-  const stats = await getStats();
-
-  res.status(200).json(stats);
 });
 
 router.get("/accounts/search/:field/:query", async (req, res) => {

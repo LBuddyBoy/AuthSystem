@@ -1,0 +1,173 @@
+/* --- Create Reply Form --- */
+.createReplyContainer {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing) calc(var(--spacing) * 1.5);
+  background: var(--bg-color);
+  border-bottom: 1.5px solid var(--color-border);
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: 0 3px 12px 0 rgba(51, 235, 103, 0.03);
+  margin-bottom: 0.8rem;
+  gap: 1em;
+}
+
+.createReply {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+}
+
+.createReply input[type="text"] {
+  flex: 1 1 auto;
+  font-size: 1.06rem;
+  font-family: var(--font-main);
+  background: var(--bg-accent);
+  border: 1.3px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.75em 1.1em;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  color: var(--text-color);
+}
+
+.createReply input[type="text"]:focus {
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.createReply button {
+  font-family: var(--font-main);
+  font-size: 1.02rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.58em 1.3em;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+  transition: background var(--transition), opacity var(--transition);
+}
+
+.createReply button:hover,
+.createReply button:focus {
+  opacity: 0.88;
+  background: var(--primary-dark);
+}
+
+/* --- Reply Card --- */
+.replyCard {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing) calc(var(--spacing) * 1.5);
+  border-bottom: 1px solid var(--color-border);
+  background: transparent;
+  transition: background var(--transition);
+}
+.replyCard:last-child {
+  border-bottom: none;
+}
+.replyCard:hover,
+.replyCard:focus {
+  background: var(--bg-color);
+}
+
+.replyByLine {
+  display: flex;
+  align-items: center;
+  gap: 0.95em;
+  font-size: 1rem;
+  color: var(--text-color);
+  opacity: 0.85;
+  margin-bottom: 0.4em;
+  width: 100%;
+}
+.replyByLine img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+}
+.replyUser {
+  font-weight: 600;
+  color: var(--primary);
+}
+.replyMessage {
+  font-size: 1.08rem;
+  color: var(--text-color);
+  margin-bottom: 0.1em;
+  margin-left: 0.2em;
+}
+
+/* --- Reply Edit Input --- */
+.replyMessageEdit {
+  width: 100%;
+  font-size: 1.09rem;
+  font-family: var(--font-main);
+  background: var(--bg-accent);
+  border: 1.4px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 0.75em 1.1em;
+  margin: 0.35em 0 0.4em 0;
+  color: var(--text-color);
+  box-shadow: 0 2px 9px rgba(51, 235, 103, 0.05);
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.2s;
+}
+.replyMessageEdit:focus {
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 2px var(--secondary);
+}
+
+/* --- Reply Buttons --- */
+.replyButtons {
+  display: flex;
+  gap: 0.7em;
+  margin: 0.2em 0 0.4em 0;
+}
+.replyButtons button {
+  font-family: var(--font-main);
+  font-size: 0.97rem;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.55em 1.2em;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+  transition: background var(--transition), opacity var(--transition);
+}
+.replyButtons button:hover,
+.replyButtons button:focus {
+  opacity: 0.9;
+}
+.replyButtons button:last-child {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1.2px solid var(--danger);
+}
+.replyButtons button:last-child:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .replyCard {
+    padding: calc(var(--spacing) * 0.7) var(--spacing);
+    font-size: 1rem;
+  }
+  .createReply {
+    padding: 0.7em var(--spacing);
+    flex-direction: column;
+    gap: 0.5em;
+  }
+  .createReply input[type="text"] {
+    width: 100%;
+    font-size: 0.97rem;
+    padding: 0.7em 0.7em;
+  }
+  .createReply button {
+    width: 100%;
+    font-size: 0.97rem;
+    padding: 0.7em 0;
+  }
+}

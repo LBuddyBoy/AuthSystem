@@ -26,10 +26,28 @@ export async function getPostsByField(field, value) {
       JOIN roles ON roles.id = accounts.role_id
     ) accounts ON posts.account_id = accounts.id
     WHERE posts.${field} = $1
-    ORDER BY posts.created_at
+    ORDER BY posts.created_at DESC
     `;
 
   const { rows } = await db.query(SQL, [value]);
+
+  return rows;
+}
+
+export async function getLatestPosts(limit) {
+  const SQL = `
+  SELECT posts.*, row_to_json(accounts) as account
+  FROM posts
+  JOIN (
+    SELECT ${MAPPED_ACCOUNT_RETURNS("accounts")}, row_to_json(roles) as role
+    FROM accounts
+    JOIN roles ON roles.id = accounts.role_id
+  ) accounts ON posts.account_id = accounts.id
+  ORDER BY posts.created_at DESC
+  LIMIT $1
+  `;
+
+  const { rows } = await db.query(SQL, [limit]);
 
   return rows;
 }

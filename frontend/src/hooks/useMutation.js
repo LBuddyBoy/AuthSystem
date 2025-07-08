@@ -8,17 +8,18 @@ export default function useMutation(resource, method, tagsToInvalidate) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const mutate = async (body) => {
+  const mutate = async (body, parameters = "") => {
     setLoading(true);
     setError(null);
     try {
-      const result = await request(resource, {
+      const result = await request(resource + parameters, {
         method,
         body: JSON.stringify(body),
       });
       console.log(result);
       setData(result);
       invalidateTags(tagsToInvalidate);
+      return result;
     } catch (e) {
       console.error(e);
       setError(e.message);

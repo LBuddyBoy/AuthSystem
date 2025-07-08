@@ -1,35 +1,17 @@
 import { useContext, createContext, useState } from "react";
 import useQuery from "../hooks/useQuery";
 import Loading from "../components/Loading";
-import { API } from "./APIContext";
 
 const ForumsContext = createContext();
 
 export function ForumsProvider({ children }) {
-  const { loading, error, data: forums } = useQuery("/forums");
+  const { loading, error, data: forums } = useQuery("/forums", "forums");
   const [editing, setEditing] = useState();
 
   if (loading || !forums) return <Loading></Loading>;
 
-  const updatePost = async ({id, payload}) => {
-    const response = await fetch(`${API}/posts/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ...payload }),
-    });
-
-    const result = await response.json();
-    if (!response.ok) {
-      throw new Error(result);
-    }
-
-    return result;
-  }
 
   const exports = {
-    updatePost,
     editing,
     setEditing,
     forums

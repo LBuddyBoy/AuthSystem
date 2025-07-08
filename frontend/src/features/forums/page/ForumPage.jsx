@@ -6,7 +6,7 @@ import "../style/forumPage.css";
 
 export default function ForumPage() {
   const { id } = useParams();
-  const { loading, data: forum } = useQuery("/forums/" + id);
+  const { loading, data: forum } = useQuery("/forums/" + id, "forum");
 
   if (loading || !forum) return <Loading />;
 
@@ -22,7 +22,7 @@ export default function ForumPage() {
 }
 
 function ForumPosts({ forum_id }) {
-  const { loading, data: posts } = useQuery("/forums/" + forum_id + "/posts");
+  const { loading, data: posts } = useQuery("/forums/" + forum_id + "/posts", "posts");
 
   if (loading || !posts) return <Loading />;
 

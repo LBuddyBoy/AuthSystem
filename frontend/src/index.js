@@ -22,6 +22,8 @@ import Forums from "./features/forums/Forums";
 import { ForumsProvider } from "./context/ForumsContext";
 import Tiptap from "./components/Tiptap";
 import { APIProvider } from "./context/APIContext";
+import CreatePostPage from "./features/forums/page/CreatePostPage";
+import MyPostsPage from "./features/forums/page/MyPostsPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -36,13 +38,18 @@ root.render(
                   <Route index path="/" element={<App />} />
                   <Route index path="/login" element={<Login />} />
                   <Route index path="/signup" element={<SignUp />} />
-                  <Route index path="/account" element={<Account />} />
-                  <Route index path="/verify" element={<Verify />} />
+                  <Route index path="/verify/:token" element={<Verify />} />
                   <Route index path="/404" element={<Error404 />} />
-                  <Route index path="/tiptap" element={<Tiptap />} />
                   <Route index path="/forums" element={<Forums />} />
                   <Route index path="/forums/:id" element={<ForumPage />} />
                   <Route index path="/posts/:id" element={<PostPage />} />
+
+                  <Route element={<RequireAuth redirect={true}></RequireAuth>}>
+                    <Route index path="/account" element={<Account />} />
+                    <Route index path="/create-post" element={<CreatePostPage />} />
+                    <Route index path="/my-posts" element={<MyPostsPage />} />
+                  </Route>
+
                   <Route
                     element={
                       <RequireAuth permission="admin:panel" redirect={true} />

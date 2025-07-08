@@ -1,5 +1,6 @@
 import {
   createPost,
+  getLatestPosts,
   getPostById,
   getPostsByField,
   updatePost,
@@ -14,10 +15,11 @@ export default router;
 
 router.post(
   "/",
+  requireAccount,
   requireBody(["title", "body", "forum_id"]),
   async (req, res) => {
     const { title, body, forum_id } = req.body;
-    const post = await createPost({ title, body, forum_id });
+    const post = await createPost({ title, body, forum_id, account_id: req.account.id });
 
     res.status(201).json(post);
   }
@@ -50,6 +52,15 @@ router.put("/:id", async (req, res) => {
   const post = await getPostById(req.post.id);
 
   res.status(200).json(post);
+});
+
+router.get("/me", requireAccount, async (req, res) => {
+  res.status(200).json(await getPostsByField("account_id", req.account.id));
+});
+
+router.get("/latest/:limit", async (req, res) => {
+  const { limit } = req.params;
+  res.status(200).json(await getLatestPosts(limit));
 });
 
 router.get("/:id", async (req, res) => {

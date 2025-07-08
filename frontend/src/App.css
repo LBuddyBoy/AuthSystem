@@ -1,0 +1,182 @@
+.homeContainer {
+  max-width: 840px;
+  margin: 2.5rem auto;
+  background: var(--bg-accent);
+  border-radius: 18px;
+  box-shadow: var(--shadow, 0 2px 12px rgba(0,0,0,0.05));
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+}
+
+/* 1. Header */
+.homeHeader h1 {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--primary-dark, #37976b);
+  margin-bottom: 0.25em;
+}
+
+.homeHeader p {
+  color: var(--text-color, #222);
+  opacity: 0.82;
+  font-size: 1.1rem;
+}
+
+/* 2. Quick Links */
+.quickLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  justify-content: center;
+  margin: 0.5rem 0;
+}
+
+.quickLinks a {
+  background: var(--primary, #33eb67);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.9em 2.1em;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(51,235,103,0.07);
+  letter-spacing: 0.01em;
+}
+.quickLinks a:hover {
+  background: var(--primary-dark, #37976b);
+}
+
+/* 3. Latest Activity */
+.latestActivity {
+  background: var(--bg-color, #f6f8fa);
+  border-radius: 14px;
+  padding: 1.2rem 1rem;
+}
+
+.latestActivity h2 {
+  margin-bottom: 0.8em;
+  font-size: 1.2rem;
+  color: var(--primary-dark, #37976b);
+  font-weight: 700;
+}
+
+.latestActivity ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.latestActivity li {
+  display: flex;
+  align-items: center;
+  gap: 1.1em;
+  padding: 0.55em 0;
+  border-bottom: 1px solid var(--color-border, #e0e0e0);
+}
+
+.latestActivity li:last-child {
+  border-bottom: none;
+}
+
+.latestActivity a {
+  font-weight: 600;
+  color: var(--primary-dark, #37976b);
+  text-decoration: none;
+  transition: text-decoration 0.15s;
+}
+.latestActivity a:hover {
+  text-decoration: underline;
+}
+
+.latestActivity span {
+  font-size: 0.98em;
+  color: var(--text-color, #222);
+  opacity: 0.6;
+}
+
+/* 4. Shortcuts */
+.shortcuts {
+  display: flex;
+  gap: 1.2em;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.shortcuts button,
+.shortcuts a {
+  background: var(--secondary, #58d37b);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7em 1.6em;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.18s;
+  box-shadow: 0 2px 8px rgba(88,211,123,0.08);
+}
+.shortcuts button:hover,
+.shortcuts a:hover {
+  background: var(--primary-dark, #37976b);
+}
+
+/* 5. Stats */
+.homeStats {
+  display: flex;
+  gap: 2em;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--primary-dark, #37976b);
+  opacity: 0.85;
+  padding-right: 0.4rem;
+}
+
+.homeStats p {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* 6. Announcements */
+.announcements {
+  background: var(--primary, #33eb67);
+  color: #fff;
+  border-radius: 10px;
+  padding: 0.7em 1.2em;
+  font-weight: 600;
+  box-shadow: 0 1px 7px rgba(51,235,103,0.10);
+  font-size: 1.05rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .homeContainer {
+    padding: 1.2rem 0.5rem;
+    border-radius: 11px;
+  }
+  .quickLinks {
+    gap: 0.6rem;
+  }
+  .shortcuts {
+    flex-direction: column;
+    gap: 0.7em;
+    align-items: stretch;
+  }
+  .homeStats {
+    justify-content: flex-start;
+    gap: 1.1em;
+    font-size: 0.99rem;
+    padding-right: 0;
+  }
+  .announcements {
+    font-size: 0.97rem;
+    padding: 0.5em 0.7em;
+  }
+  .latestActivity {
+    padding: 0.7rem 0.5rem;
+  }
+}

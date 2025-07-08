@@ -1,11 +1,9 @@
-import { useState } from "react";
 import TimeAgo from "../../../../components/TimeAgo";
 import { useAccount } from "../../../../context/AccountContext";
-import useMutation from "../../../../hooks/useMutation";
+import { useReply } from "../../../../context/ReplyContext";
 
 export default function ReplyCard({ reply }) {
-  const [editing, setEditing] = useState(false);
-  const [message, setMessage] = useState();
+  const { isEditing, setMessage } = useReply();
 
   return (
     <>
@@ -21,7 +19,7 @@ export default function ReplyCard({ reply }) {
             </div>
           )}
         </div>
-        {editing ? (
+        {isEditing(reply) ? (
           <input
             name="replyMessage"
             className="replyMessageEdit"
@@ -31,56 +29,31 @@ export default function ReplyCard({ reply }) {
         ) : (
           <p className="replyMessage">{reply.message}</p>
         )}
-        <ReplyButtons
-          reply={reply}
-          message={message}
-          editing={editing}
-          setEditing={setEditing}
-        />
+        <ReplyButtons reply={reply} />
       </li>
     </>
   );
 }
 
-function ReplyButtons({ reply, message, editing, setEditing }) {
-  const { mutate, loading, error, data } = useMutation(
-    `/replies/${reply.id}`,
-    "PUT",
-    ["replies"]
-  );
+function ReplyButtons({ reply }) {
+  const { isEditing, startEditing, stopEditing, saveEdits } = useReply();
   const { account, hasPermission } = useAccount();
   const editable = account && account.id === reply.account_id;
 
-  const startEditing = () => {
-    setEditing(true);
-  };
-
-  const stopEditing = () => {
-    setEditing(false);
-  };
-
-  const saveEdits = async () => {
-    await mutate({
-      message,
-    });
-    console.log(data);
-    setEditing(false);
-  };
-
-  if (!editable && !hasPermission("admin:panel")) {
+  if (!editable && (!account || !hasPermission("admin:panel"))) {
     return <></>;
   }
 
   return (
     <div className="replyButtons">
-      {editing ? (
+      {isEditing(reply) ? (
         <>
-          <button onClick={stopEditing}>Cancel</button>
-          <button onClick={saveEdits}>Save</button>
+          <button onClick={() => stopEditing()}>Cancel</button>
+          <button onClick={() => saveEdits()}>Save</button>
         </>
       ) : (
         <>
-          {editable && <button onClick={startEditing}>Edit</button>}
+          {editable && <button onClick={() => startEditing(reply)}>Edit</button>}
           <DeleteButton reply={reply} />
         </>
       )}
@@ -89,19 +62,10 @@ function ReplyButtons({ reply, message, editing, setEditing }) {
 }
 
 function DeleteButton({ reply }) {
-  const { mutate, loading, error, data } = useMutation(
-    `/replies/${reply.id}`,
-    "DELETE",
-    ["replies"]
-  );
-
-  const handleDelete = async (e) => {
-    await mutate({});
-  };
-
+  const { handleDelete } = useReply();
   return (
     <>
-      <button onClick={handleDelete}>Delete</button>
+      <button onClick={() => handleDelete(reply)}>Delete</button>
     </>
   );
 }

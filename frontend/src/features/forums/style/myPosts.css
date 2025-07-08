@@ -1,0 +1,127 @@
+.myPostsPage {
+  max-width: 760px;
+  margin: 2.5rem auto;
+  background: var(--bg-accent);
+  border-radius: 17px;
+  box-shadow: var(--shadow, 0 2px 12px rgba(0,0,0,0.05));
+  padding: 2rem 1.4rem;
+}
+
+.myPostsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.7rem;
+}
+.myPostsHeader h1 {
+  font-size: 1.8rem;
+  color: var(--primary-dark);
+  font-weight: 800;
+}
+.newPostBtn {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.75em 1.7em;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background 0.15s;
+  font-size: 1rem;
+}
+.newPostBtn:hover {
+  background: var(--primary-dark);
+}
+
+.myPostsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+}
+
+.myPostCard {
+  background: var(--bg-color);
+  border-radius: 12px;
+  padding: 1.2rem 1.1rem 1.2rem 1.2rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.myPostInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.myPostTitle {
+  color: var(--primary-dark);
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.myPostTitle:hover {
+  text-decoration: underline;
+}
+
+.myPostMeta {
+  font-size: 0.93rem;
+  color: var(--text-color);
+  opacity: 0.68;
+  margin-bottom: 0.4em;
+}
+
+.myPostSnippet {
+  color: var(--text-color);
+  opacity: 0.94;
+  font-size: 1rem;
+  margin-top: 0.35em;
+}
+
+.emptyState {
+  text-align: center;
+  margin: 2.7rem 0;
+  color: var(--text-color);
+  opacity: 0.72;
+}
+.newPostCta {
+  display: inline-block;
+  margin-top: 0.6rem;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 10px;
+  padding: 0.55em 1.3em;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+.newPostCta:hover {
+  background: var(--primary-dark);
+}
+
+.errorMsg {
+  color: var(--danger, #e64848);
+  background: var(--danger-bg, #fae0e0);
+  padding: 1em;
+  border-radius: 10px;
+  text-align: center;
+  margin: 1em 0;
+}
+
+@media (max-width: 700px) {
+  .myPostsPage {
+    padding: 1rem 0.2rem;
+    border-radius: 10px;
+  }
+  .myPostsHeader h1 {
+    font-size: 1.18rem;
+  }
+  .myPostCard {
+    padding: 0.8rem 0.5rem;
+    border-radius: 7px;
+    font-size: 0.98rem;
+  }
+}
