@@ -35,36 +35,34 @@ root.render(
             <ForumsProvider>
               <Routes>
                 <Route element={<Layout />}>
-                  <Route index path="/" element={<App />} />
-                  <Route index path="/login" element={<Login />} />
-                  <Route index path="/signup" element={<SignUp />} />
-                  <Route index path="/verify/:token" element={<Verify />} />
-                  <Route index path="/404" element={<Error404 />} />
-                  <Route index path="/forums" element={<Forums />} />
-                  <Route index path="/forums/:id" element={<ForumPage />} />
-                  <Route index path="/posts/:id" element={<PostPage />} />
+                  <Route index element={<App />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<SignUp />} />
+                  <Route path="/verify/:token" element={<Verify />} />
+                  <Route path="/404" element={<Error404 />} />
+                  <Route path="/forums" element={<Forums />} />
+                  <Route path="/forums/:id" element={<ForumPage />} />
+                  <Route path="/posts/:id" element={<PostPage />} />
+                  <Route path="*" element={<Error404 />} />
 
                   <Route element={<RequireAuth redirect={true}></RequireAuth>}>
-                    <Route index path="/account" element={<Account />} />
-                    <Route index path="/create-post" element={<CreatePostPage />} />
-                    <Route index path="/my-posts" element={<MyPostsPage />} />
+                    <Route path="/account" element={<Account />} />
+                    <Route path="/create-post" element={<CreatePostPage />} />
+                    <Route path="/my-posts" element={<MyPostsPage />} />
                   </Route>
 
                   <Route
                     element={
-                      <RequireAuth permission="admin:panel" redirect={true} />
+                      <RequireAuth
+                        permission="admin:panel"
+                        redirect={true}
+                      ></RequireAuth>
                     }
                   >
-                    <Route element={<AdminLayout />}>
-                      <Route path="/admin" element={<AdminPanel />} />
-                      <Route
-                        path="/admin/accounts"
-                        element={<AdminAccountLayout />}
-                      />
-                      <Route
-                        path="/admin/roles"
-                        element={<AdminRolesLayout />}
-                      />
+                    <Route path="/admin" element={<AdminLayout />}>
+                      <Route index element={<AdminPanel />} />
+                      <Route path="accounts" element={<AdminAccountLayout />} />
+                      <Route path="roles" element={<AdminRolesLayout />} />
                     </Route>
                   </Route>
                 </Route>

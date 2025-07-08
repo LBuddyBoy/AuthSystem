@@ -17,12 +17,10 @@ export default function App() {
     error: postsError,
   } = useQuery("/posts/latest/5", "posts");
 
-  const { account } = useAccount();
+  const { account, hasPermission } = useAccount();
 
   if (statsLoading || !stats || postsLoading || !posts)
     return <Loading></Loading>;
-
-  console.log(posts);
 
   return (
     <div className="homeContainer">
@@ -30,8 +28,8 @@ export default function App() {
       <header className="homeHeader">
         {account ? (
           <>
-          <h1>Welcome back, {account.username}!</h1>
-          <p>Look around, see if you find anything you like</p>
+            <h1>Welcome back, {account.username}!</h1>
+            <p>Look around, see if you find anything you like</p>
           </>
         ) : (
           <>
@@ -46,10 +44,21 @@ export default function App() {
 
       {/* 2. Quick Links */}
       <nav className="quickLinks">
-        <a href="/forums">Forums</a>
-        <a href="/my-posts">My Posts</a>
-        <a href="/settings">Account Settings</a>
-        <a href="/admin">Admin Panel</a>
+        <Link to="/forums">Forums</Link>
+        {account ? (
+          <>
+            <Link to="/my-posts">My Posts</Link>
+            <Link to="/account">Settings</Link>
+            {hasPermission("admin:panel") && (
+              <Link to="/admin">Admin Panel</Link>
+            )}
+          </>
+        ) : (
+          <>
+            <Link to="/signup">Signup</Link>
+            <Link to="/login">Login</Link>
+          </>
+        )}
       </nav>
 
       {/* 3. Latest Activity */}

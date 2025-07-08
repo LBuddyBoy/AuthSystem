@@ -19,7 +19,7 @@ export default function SignUp() {
       signup({ username, email, password });
       navigate("/verify");
     } catch (error) {
-      setError(error.message);
+      setError(error);
     }
   };
 

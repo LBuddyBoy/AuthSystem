@@ -8,7 +8,11 @@ export default function RequireAuth({ permission = "", children, redirect = fals
     return <Navigate to={"/login"} replace></Navigate>;
   }
 
-  if (permission && permission !== "" && !hasPermission(permission)) {
+  console.log("account:", account);
+console.log("permission required:", permission);
+console.log("hasPermission?", permission ? hasPermission(permission) : true);
+
+  if (permission !== "" && !hasPermission(permission)) {
     if (redirect) {
         return <Navigate to={"/404"} replace/>
     }

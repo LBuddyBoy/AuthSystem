@@ -25,7 +25,7 @@ export default function MyPostsPage() {
       {posts.length === 0 ? (
         <div className="emptyState">
           <p>You haven’t posted anything yet!</p>
-          <Link className="newPostCta" to="/forums/new">Create your first post</Link>
+          <Link className="newPostCta" to="/create-post">Create your first post</Link>
         </div>
       ) : (
         <ul className="myPostsList">
@@ -44,11 +44,6 @@ export default function MyPostsPage() {
                   </div>
                   <p className="myPostSnippet">{preview}</p>
                 </div>
-                {/* Optional: edit/delete buttons */}
-                {/* <div className="myPostActions">
-                  <Link to={`/forums/edit/${post.id}`}>Edit</Link>
-                  <button>Delete</button>
-                </div> */}
               </li>
             );
           })}

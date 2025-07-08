@@ -18,7 +18,7 @@ export default function Login() {
       await login({ email, password });
       navigate("/account");
     } catch (error) {
-      setError(error.message);
+      setError(error);
     }
   };
 
